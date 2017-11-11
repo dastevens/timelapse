@@ -77,6 +77,20 @@ class App extends React.Component<{}, AppState> {
         );
     }
 
+    projectPageRender(props: {}) {
+        if (this.state.loadingState !== LoadingState.Ready) {
+            return <p>Loading</p>
+        } else {
+            let name = decodeURI(window.location.href.substring(window.location.href.lastIndexOf('/') + 1));
+            let project = this.state.projects.find(p => p.name === name);
+            if (project === undefined) {
+                return <NotFoundPage />
+            } else {
+                return <ProjectPage project={project} />
+            }
+        }
+    }
+
     render() {
         return (
           <div className="App">
@@ -85,8 +99,8 @@ class App extends React.Component<{}, AppState> {
                 <Switch>
                     <Route path={Routes.Home.reactRouterPath} component={HomePage} />
                     <Route path={Routes.ProjectList.reactRouterPath} render={() => this.projectListPageRender({})} />
-                    <Route path={Routes.Project.reactRouterPath} component={ProjectPage} />
-                    <Route path="*" component={NotFoundPage} />
+                    <Route path={Routes.Project.reactRouterPath} render={() => this.projectPageRender({})} />
+                    <Route path="/.+" component={NotFoundPage} />
                 </Switch>
             </HashRouter>
         </div>

@@ -1,4 +1,6 @@
-import { Project } from '../model/Project';
+import {
+    Project
+} from '../model/Project';
 
 export function getProjectList(): Promise<Project[]> {
 
@@ -8,7 +10,9 @@ export function getProjectList(): Promise<Project[]> {
         setTimeout(
             function () {
                 resolve(
-                    new Array(10).fill(0).map((z, i) => new Project('Project ' + i))
+                    new Array(10).fill(0).map((z, i) =>
+                        new Project('Project ' + i, 'Description ' + i, i % 3)
+                    )
                 );
             },
             1000);
