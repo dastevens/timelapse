@@ -1,0 +1,11 @@
+rem Construct timelapse from photos
+ffmpeg -f image2 -i img-%04d.jpg -vcodec mpeg4 -b 800k -q:v 1 video.mp4
+
+rem Trim out a section
+ffmpeg -i video.mp4 -c copy -ss 00:00:28 -t 00:00:47 -q:v 1 video2.mp4
+
+rem Rotate 90° clockwise
+ffmpeg -i video.mp4 -vf "transpose=1" -q:v 1 video2.mp4
+
+rem Crop 786x486 TL 294:432
+ffmpeg -i video.mp4 -filter:v "crop=786:486:294:432" -q:v 1 video2.mp4
