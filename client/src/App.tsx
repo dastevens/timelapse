@@ -50,7 +50,7 @@ class App extends React.Component<{}, AppState> {
             projects: []
         });
 
-        getProjectList()
+        return getProjectList()
             .then(
             projects => {
                 this.setState({
@@ -86,7 +86,7 @@ class App extends React.Component<{}, AppState> {
             if (project === undefined) {
                 return <NotFoundPage />
             } else {
-                return <ProjectPage project={project} />
+                return <ProjectPage project={project} refreshProjectList={() => this.load()} />
             }
         }
     }
