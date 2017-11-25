@@ -56,8 +56,8 @@ export class Project {
 
     getProgress(): number {
         let now = new Date().getTime();
-        if (now < this.start.getTime()) return 0;
-        if (now > this.getEnd().getTime()) return 1;
+        if (now < this.start.getTime()) { return 0; }
+        if (now > this.getEnd().getTime()) { return 1; }
         return (now - this.start.getTime()) / (this.getTotalInterval() * 1000);
     }
 }
