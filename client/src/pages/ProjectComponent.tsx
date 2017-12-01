@@ -8,15 +8,10 @@ import {
     Panel,
     ProgressBar,
 } from 'react-bootstrap';
-
 import {
-    Project as ProjectModel,
+    Project,
     ProjectStatus
 } from '../model/Project';
-
-import {
-
-} from '../model/Reducers';
 
 interface StatusSettings {
     bsStyle: string;
@@ -44,8 +39,11 @@ export function getStatusValue(status: ProjectStatus, setting: Setting): string 
     }
 }
 
-class ProjectProperties {
-    project?: ProjectModel;
+export interface Fields {
+    project?: Project;
+}
+
+export interface Events {
 }
 
 const EditControl = (props: {name: string, value: string}) => (
@@ -68,7 +66,7 @@ const ButtonControl = (props: {label: string, enabled: boolean, glyph: string, s
     </Button>
 );
 
-export const Project = (props: ProjectProperties) => {
+export const ProjectComponent = (props: Fields & Events) => {
 
     const project = props.project;
     if (project === undefined) {

@@ -9,11 +9,14 @@ import {
 
 import { Project } from './model/Project';
 
-class NavigationProps {
+export interface Fields {
     projects: Project[];
 }
+export interface Events {
+    selectProject: (projectName?: string) => void;
+}
 
-export const Navigation = (props: NavigationProps) => (
+export const NavigationComponent = (props: Fields & Events) => (
     <Navbar inverse={true} collapseOnSelect={true}>
         <Navbar.Header>
             <Navbar.Brand>Timelapse</Navbar.Brand>
@@ -21,11 +24,11 @@ export const Navigation = (props: NavigationProps) => (
         </Navbar.Header>
         <Navbar.Collapse>
             <Nav>
-                <NavItem>Projects</NavItem>
+                <NavItem onClick={() => props.selectProject(undefined)}>Projects</NavItem>
                 <NavDropdown title="Select a project" id="nav-dropdown-projects">
                     {
                         props.projects.map(project =>
-                            <MenuItem key={project.name}>
+                            <MenuItem onClick={() => props.selectProject(project.name)} key={project.name}>
                                 {project.name}
                             </MenuItem>
                         )

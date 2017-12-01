@@ -1,24 +1,19 @@
 import * as React from 'react';
-import { Project } from './model/Project';
-import { LoadingState } from './model/LoadingState';
 import './App.css';
-import { Navigation } from './Navigation';
-import { ProjectList as ProjectListPage } from './pages/ProjectList';
-import { Project as ProjectPage } from './pages/Project';
+import { NavigationContainer } from './NavigationContainer';
+import { ProjectListContainer } from './pages/ProjectListContainer';
+import { ProjectContainer } from './pages/ProjectContainer';
 
-export interface AppProps {
-    projects: Project[];
-    loadingState: LoadingState;
-    projectName: string;
+export interface Fields {
+    projectName?: string;
+}
+interface Events {
 }
 
-export const AppComponent = (props: AppProps) => (
+export const AppComponent = (props: Fields & Events) => (
     <div className="App">
-        <Navigation projects={props.projects} />
-        <pre>{props.projects}</pre>
-        <pre>{props.loadingState}</pre>
-        <pre>{props.projectName}</pre>
-        <ProjectListPage projects={props.projects} />
-        <ProjectPage project={props.projects.find(project => project.name.localeCompare(props.projectName) === 0)} />
+        <NavigationContainer />
+        {props.projectName === undefined ? <ProjectListContainer /> : null}
+        {props.projectName !== undefined ? <ProjectContainer /> : null}
     </div>
 );
