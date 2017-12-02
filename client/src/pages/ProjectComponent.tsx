@@ -44,12 +44,17 @@ export interface Fields {
 }
 
 export interface Events {
+    onNameChange: (name: string) => void;
+    onDescriptionChange: (description: string) => void;
+    onStartChange: (start: Date) => void;
+    onImagesChange: (images: number) => void;
+    onIntervalChange: (interval: number) => void;
 }
 
-const EditControl = (props: {name: string, value: string}) => (
+const EditControl = (props: {name: string, type: string, value: string, onChange: (value: string) => void}) => (
     <FormGroup>
         <ControlLabel>{props.name}</ControlLabel>
-        <FormControl value={props.value} />
+        <FormControl type={props.type} value={props.value} onChange={(event) => props.onChange((event.target as any).value)} />
     </FormGroup>
 );
 
@@ -65,6 +70,24 @@ const ButtonControl = (props: {label: string, enabled: boolean, glyph: string, s
         <Glyphicon glyph={props.glyph}/> {props.label}
     </Button>
 );
+
+const pad = (value: number): string => (value < 10 ? "0" : "") + value;
+const dateToValue = (date: Date): string => {
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
+}
+const timeToValue = (date: Date): string => {
+    return pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds());
+}
+
+const valueToDate = (dateString: string, timeString: string): Date => {
+    var year = parseInt(dateString.substr(0, 4));
+    var month = parseInt(dateString.substr(5, 2));
+    var date = parseInt(dateString.substr(8, 2));
+    var hour = parseInt(timeString.substr(0, 2));
+    var minute = parseInt(timeString.substr(3, 2));
+    var second = parseInt(timeString.substr(6, 2));
+    return new Date(year, month - 1, date, hour, minute, second);
+}
 
 export const ProjectComponent = (props: Fields & Events) => {
 
@@ -89,11 +112,12 @@ export const ProjectComponent = (props: Fields & Events) => {
             >
 
                 <form>
-                    <EditControl name="Name" value={project.name} />
-                    <EditControl name="Description" value={project.description} />
-                    <EditControl name="Start" value={project.start.toLocaleString()} />
-                    <EditControl name="Number of images" value={project.images.toString()} />
-                    <EditControl name="Interval (s)" value={project.interval.toString()} />
+                    <EditControl name="Name" type="input" value={project.name} onChange={(name) => props.onNameChange(name)} />
+                    <EditControl name="Description" type="input" value={project.description} onChange={(name) => props.onDescriptionChange(name)} />
+                    <EditControl name="Start date" type="date" value={dateToValue(project.start)} onChange={(dateString) => props.onStartChange(valueToDate(dateString, timeToValue(project.start)))} />
+                    <EditControl name="Start time" type="time" value={timeToValue(project.start)} onChange={(timeString) => props.onStartChange(valueToDate(dateToValue(project.start), timeString))} />
+                    <EditControl name="Number of images" type="number" value={project.images.toString()} onChange={(imagesString) => props.onImagesChange(parseInt(imagesString))} />
+                    <EditControl name="Interval (s)" type="number" value={project.interval.toString()} onChange={(intervalString) => props.onIntervalChange(parseInt(intervalString))} />
                     <StaticControl name="End" value={project.getEnd().toLocaleString()} />
                     <StaticControl name="Total time (s)" value={project.getTotalInterval().toString()} />
                     <ButtonControl label="Save" enabled={project.canEdit()} glyph="save" style="primary" />
