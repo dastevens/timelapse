@@ -1,5 +1,8 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import {
+    CreateProjectAction
+} from '../redux/CreateProjectAction';
+import {
     SetProjectDescriptionAction,
     SetProjectImagesAction,
     SetProjectIntervalAction,
@@ -7,12 +10,23 @@ import {
     SetProjectStartAction
 } from '../redux/EditProjectAction';
 import { SelectProjectAction } from './SelectProjectAction';
-import { Project } from '../model/Project';
+import { Project, ProjectStatus } from '../model/Project';
 import { ProjectState } from './StoreState';
 
 export const projectReducer = reducerWithInitialState<ProjectState>({
     project: undefined,
 })
+    .case(CreateProjectAction, (state: ProjectState, payload: { }) => ({
+        ...state,
+        project: new Project(
+            "",
+            "",
+            ProjectStatus.Setup,
+            new Date(),
+            1000,
+            1
+        )
+    }))
     .case(SelectProjectAction, (state: ProjectState, payload: { project?: Project }) => ({
         ...state,
         project: payload.project === undefined

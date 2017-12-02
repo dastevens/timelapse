@@ -14,6 +14,7 @@ export interface Fields {
 }
 export interface Events {
     selectProject: (project?: Project) => void;
+    createProject: () => void;
 }
 
 export const NavigationComponent = (props: Fields & Events) => (
@@ -34,6 +35,7 @@ export const NavigationComponent = (props: Fields & Events) => (
                         )
                     }
                 </NavDropdown>
+                <NavItem onClick={() => props.createProject()}>New</NavItem>
             </Nav>
         </Navbar.Collapse>
     </Navbar>
