@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import { AppComponent, Fields } from './AppComponent';
-import { ProjectState } from './redux/projectReducer';
+import { StoreState } from './redux/StoreState';
 
-const mapStateToProps = (state: { project: ProjectState }): Fields => ({
-    projectName: state.project.projectName,
+const mapStateToProps = (state: StoreState): Fields => ({
+    project: state.project.project,
 });
 
 export const AppContainer = connect(mapStateToProps)(AppComponent);

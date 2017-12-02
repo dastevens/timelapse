@@ -17,7 +17,7 @@ export interface Fields {
 }
 
 export interface Events {
-    selectProject: (projectName: string) => void;
+    selectProject: (project?: Project) => void;
 }
 
 export const ProjectListComponent = (props: Fields & Events) => (
@@ -26,7 +26,7 @@ export const ProjectListComponent = (props: Fields & Events) => (
             props.projects.map(project =>
                 <ListGroupItem
                     key={project.name}
-                    onClick={() => props.selectProject(project.name)}
+                    onClick={() => props.selectProject(project)}
                     bsStyle={getStatusValue(project.status, Setting.bsStyle)}
                 >
                     <Glyphicon glyph={getStatusValue(project.status, Setting.glyph)} /> {project.name}

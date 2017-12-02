@@ -13,7 +13,7 @@ export interface Fields {
     projects: Project[];
 }
 export interface Events {
-    selectProject: (projectName?: string) => void;
+    selectProject: (project?: Project) => void;
 }
 
 export const NavigationComponent = (props: Fields & Events) => (
@@ -28,7 +28,7 @@ export const NavigationComponent = (props: Fields & Events) => (
                 <NavDropdown title="Select a project" id="nav-dropdown-projects">
                     {
                         props.projects.map(project =>
-                            <MenuItem onClick={() => props.selectProject(project.name)} key={project.name}>
+                            <MenuItem onClick={() => props.selectProject(project)} key={project.name}>
                                 {project.name}
                             </MenuItem>
                         )

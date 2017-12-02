@@ -1,20 +1,21 @@
 import { connect, Dispatch } from 'react-redux';
 import { AnyAction } from 'typescript-fsa';
-import { ProjectListState } from '../redux/projectListReducer';
+import { StoreState } from '../redux/StoreState';
 import {
     Events,
     Fields,
     ProjectListComponent
 } from './ProjectListComponent';
-import { SelectProjectAction } from '../redux/SelectProjectAction';
+import { Project } from '../model/Project';
+import { selectProject } from '../redux/SelectProjectAction';
 
-const mapStateToProps = (state: { projectList: ProjectListState }): Fields => ({
+const mapStateToProps = (state: StoreState): Fields => ({
     projects: state.projectList.projects,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
-        selectProject: (projectName: string) => dispatch(SelectProjectAction({projectName}))
+        selectProject: (project?: Project) => dispatch(selectProject(project))
     };
 };
 

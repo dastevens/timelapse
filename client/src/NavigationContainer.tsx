@@ -5,16 +5,17 @@ import {
     Fields,
     NavigationComponent
 } from './NavigationComponent';
-import { ProjectListState } from './redux/projectListReducer';
-import { SelectProjectAction } from './redux/SelectProjectAction';
+import { StoreState } from './redux/StoreState';
+import { selectProject } from './redux/SelectProjectAction';
+import { Project } from './model/Project';
 
-const mapStateToProps = (state: { projectList: ProjectListState }): Fields => ({
+const mapStateToProps = (state: StoreState): Fields => ({
     projects: state.projectList.projects,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
-        selectProject: (projectName: string) => dispatch(SelectProjectAction({ projectName }))
+        selectProject: (project?: Project) => dispatch(selectProject(project))
     };
 };
 

@@ -1,15 +1,13 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import { SelectProjectAction } from './SelectProjectAction';
+import { Project } from '../model/Project';
+import { ProjectState } from './StoreState';
 
-export type ProjectState = {
-    projectName?: string;
-};
-  
 export const projectReducer = reducerWithInitialState<ProjectState>({
-    projectName: undefined,
+    project: undefined,
 })
-    .case(SelectProjectAction, (state: ProjectState, payload: { projectName?: string }) => ({
-        ...state,
-        projectName: payload.projectName,
-    }))
-    ;
+.case(SelectProjectAction, (state: ProjectState, payload: { project?: Project }) => ({
+    ...state,
+    project: payload.project,
+}))
+;

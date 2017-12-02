@@ -4,14 +4,9 @@ import {
     Success,
 } from 'typescript-fsa';
 import { Project } from '../model/Project';
+import { ProjectListState } from './StoreState';
 import { LoadProjectsAction } from './LoadProjectsAction';
 
-export type ProjectListState = {
-    errorMessage: string;
-    projects: Project[];
-    loading: boolean;
-};
-  
 export const projectListReducer = reducerWithInitialState({
     loading: true, 
     projects: new Array<Project>(),
