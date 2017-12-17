@@ -104,3 +104,36 @@ export function deleteProject(name: string): Promise<void> {
         );
     });
 }
+
+export function previewProject(name: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        setTimeout(
+            () => {
+                resolve('preview.jpg');
+            },
+            600
+        );
+    });
+}
+
+export function startProject(name: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        setTimeout(
+            () => {
+                resolve();
+            },
+            1200
+        );
+    });
+}
+
+export function stopProject(name: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        setTimeout(
+            () => {
+                resolve();
+            },
+            200
+        );
+    });
+}

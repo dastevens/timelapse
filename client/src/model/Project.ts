@@ -4,7 +4,11 @@ export enum ProjectStatus {
     Completed
 }
 
-export class Project {
+export interface ProjectID {
+    name: string;
+}
+
+export class Project implements ProjectID {
     constructor(
         public readonly name: string,
         public readonly description: string,

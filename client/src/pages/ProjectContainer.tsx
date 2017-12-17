@@ -6,7 +6,10 @@ import {
     Fields,
     ProjectComponent
 } from './ProjectComponent';
+import { deleteProject } from '../redux/DeleteProjectAction';
 import { editProject } from '../redux/EditProjectAction';
+import { saveProject } from '../redux/SaveProjectAction';
+import { controlProject } from '../redux/ControlProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
     project: state.project.project
@@ -14,11 +17,16 @@ const mapStateToProps = (state: StoreState): Fields => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
-        onNameChange: name => dispatch(editProject.setName(name)),
+        onDelete: projectName => dispatch(deleteProject(projectName)),
         onDescriptionChange: description => dispatch(editProject.setDescription(description)),
-        onStartChange: start => dispatch(editProject.setStart(start)),
         onImagesChange: images => dispatch(editProject.setImages(images)),
         onIntervalChange: interval => dispatch(editProject.setInterval(interval)),
+        onNameChange: name => dispatch(editProject.setName(name)),
+        onPreview: name => dispatch(controlProject.preview(name)),
+        onSave: project => dispatch(saveProject(project)),
+        onStart: projectName => dispatch(controlProject.start(projectName)),
+        onStartChange: start => dispatch(editProject.setStart(start)),
+        onStop: projectName => dispatch(controlProject.stop(projectName)),
     };
 };
 

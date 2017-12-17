@@ -45,11 +45,16 @@ export interface Fields {
 }
 
 export interface Events {
-    onNameChange: (name: string) => void;
+    onDelete: (name: string) => void;
     onDescriptionChange: (description: string) => void;
-    onStartChange: (start: Date) => void;
     onImagesChange: (images: number) => void;
     onIntervalChange: (interval: number) => void;
+    onNameChange: (name: string) => void;
+    onPreview: (name: string) => void;
+    onSave: (project: Project) => void;
+    onStart: (name: string) => void;
+    onStop: (name: string) => void;
+    onStartChange: (start: Date) => void;
 }
 
 const EditControl = (props: {name: string, type: string, value: string, onChange: (value: string) => void}) => (
@@ -70,8 +75,25 @@ const StaticControl = (props: {name: string, value: string}) => (
     </FormGroup>
 );
 
-const ButtonControl = (props: {label: string, enabled: boolean, glyph: string, style: string}) => (
-    <Button disabled={!props.enabled} bsStyle={props.style}>
+const ButtonControl = (props: {
+    confirm?: string,
+    glyph: string,
+    label: string,
+    onClick: () => void,
+    style: string,
+    visible: boolean,
+}) => (
+    <Button
+        bsStyle={props.style}
+        hidden={!props.visible}
+        onClick={() => {
+            if (confirm === undefined) {
+                props.onClick();
+            } else if (confirm(props.confirm)) {
+                props.onClick();
+            }
+        }}
+    >
         <Glyphicon glyph={props.glyph}/> {props.label}
     </Button>
 );
@@ -165,40 +187,40 @@ export const ProjectComponent = (props: Fields & Events) => {
                     />
                     <ButtonGroup>
                         <ButtonControl
-                            enabled={project.canEdit()}
                             glyph="save"
                             label="Save"
+                            onClick={() => props.onSave(project)}
                             style="primary"
+                            visible={project.canEdit()}
                         />
                         <ButtonControl
-                            enabled={project.canCopy()}
-                            glyph="duplicate"
-                            label="Copy"
-                            style="primary"
-                        />
-                        <ButtonControl
-                            enabled={project.canPreview()}
                             glyph="camera"
                             label="Preview"
+                            onClick={() => props.onPreview(project.name)}
                             style="warning"
+                            visible={project.canPreview()}
                         />
                         <ButtonControl
-                            enabled={project.canStart()}
                             glyph="play"
                             label="Start"
+                            onClick={() => props.onStart(project.name)}
                             style="danger"
+                            visible={project.canStart()}
                         />
                         <ButtonControl
-                            enabled={project.canStop()}
                             glyph="stop"
                             label="Stop"
+                            onClick={() => props.onStop(project.name)}
                             style="danger"
+                            visible={project.canStop()}
                         />
                         <ButtonControl
-                            enabled={project.canDelete()}
+                            confirm={'Are you sure you want to delete ' + project.name + '?'}
                             glyph="trash"
                             label="Delete"
+                            onClick={() => props.onDelete(project.name)}
                             style="danger"
+                            visible={project.canDelete()}
                         />
                     </ButtonGroup>
                 </form>
