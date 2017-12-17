@@ -29,20 +29,6 @@ export function getProjectList(): Promise<Project[]> {
     });
 }
 
-export function updateProject(project:Project): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        setTimeout(
-            () => {
-                projects = projects.map(p =>
-                    p.name === project.name ? project : p
-                );
-                resolve();
-            },
-            500
-        );
-    });
-}
-
 export function createProject(project: Project): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         // Refuse if name already exists
@@ -59,6 +45,20 @@ export function createProject(project: Project): Promise<string> {
                 500
             );
         }
+    });
+}
+
+export function updateProject(project: Project): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        setTimeout(
+            () => {
+                projects = projects.map(p =>
+                    p.name === project.name ? project : p
+                );
+                resolve();
+            },
+            500
+        );
     });
 }
 
@@ -86,8 +86,7 @@ export function deleteProject(name: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         setTimeout(
             () => {
-                projects = projects.filter(p =>
-                    p.name !== name);
+                projects = projects.filter(p => p.name !== name);
                 resolve();
             },
             800
