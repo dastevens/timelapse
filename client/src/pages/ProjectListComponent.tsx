@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
     Button,
+    ButtonGroup,
     Glyphicon,
     ListGroup,
     ListGroupItem
@@ -60,16 +61,18 @@ export const ProjectListComponent = (props: Fields & Events) => (
                         glyph={getStatusValue(project.status, Setting.glyph)}
                     />
                     {project.name}
-                    <ToolbarButton
-                        glyph="cog"
-                        onClick={() => props.selectProject(project)}
-                    />
-                    <ToolbarButton
-                        glyph="remove"
-                        disabled={!project.canDelete()}
-                        onClick={() => props.deleteProject(project.name)}
-                        confirm={'Are you sure you want to delete ' + project.name + '?'}
-                    />
+                    <ButtonGroup>
+                        <ToolbarButton
+                            glyph="cog"
+                            onClick={() => props.selectProject(project)}
+                        />
+                        <ToolbarButton
+                            glyph="remove"
+                            disabled={!project.canDelete()}
+                            onClick={() => props.deleteProject(project.name)}
+                            confirm={'Are you sure you want to delete ' + project.name + '?'}
+                        />
+                    </ButtonGroup>
                 </ListGroupItem>
             )
         }

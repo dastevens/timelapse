@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
     Button,
+    ButtonGroup,
     ControlLabel,
     FormControl,
     FormGroup,
@@ -162,42 +163,44 @@ export const ProjectComponent = (props: Fields & Events) => {
                         name="Total time (s)"
                         value={project.getTotalInterval().toString()}
                     />
-                    <ButtonControl
-                        enabled={project.canEdit()}
-                        glyph="save"
-                        label="Save"
-                        style="primary"
-                    />
-                    <ButtonControl
-                        enabled={project.canCopy()}
-                        glyph="duplicate"
-                        label="Copy"
-                        style="primary"
-                    />
-                    <ButtonControl
-                        enabled={project.canPreview()}
-                        glyph="camera"
-                        label="Preview"
-                        style="warning"
-                    />
-                    <ButtonControl
-                        enabled={project.canStart()}
-                        glyph="play"
-                        label="Start"
-                        style="danger"
-                    />
-                    <ButtonControl
-                        enabled={project.canStop()}
-                        glyph="stop"
-                        label="Stop"
-                        style="danger"
-                    />
-                    <ButtonControl
-                        enabled={project.canDelete()}
-                        glyph="trash"
-                        label="Delete"
-                        style="danger"
-                    />
+                    <ButtonGroup>
+                        <ButtonControl
+                            enabled={project.canEdit()}
+                            glyph="save"
+                            label="Save"
+                            style="primary"
+                        />
+                        <ButtonControl
+                            enabled={project.canCopy()}
+                            glyph="duplicate"
+                            label="Copy"
+                            style="primary"
+                        />
+                        <ButtonControl
+                            enabled={project.canPreview()}
+                            glyph="camera"
+                            label="Preview"
+                            style="warning"
+                        />
+                        <ButtonControl
+                            enabled={project.canStart()}
+                            glyph="play"
+                            label="Start"
+                            style="danger"
+                        />
+                        <ButtonControl
+                            enabled={project.canStop()}
+                            glyph="stop"
+                            label="Stop"
+                            style="danger"
+                        />
+                        <ButtonControl
+                            enabled={project.canDelete()}
+                            glyph="trash"
+                            label="Delete"
+                            style="danger"
+                        />
+                    </ButtonGroup>
                 </form>
             </Panel>
         );
