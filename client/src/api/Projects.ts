@@ -4,14 +4,16 @@ import {
 } from '../model/Project';
 
 let projects = [
-    new Project('Thor',
+    new Project(
+        'Thor',
         'Rosa drawing Thor speeded up',
         ProjectStatus.Completed,
         new Date(2017, 9, 20),
         1000,
         1
     ),
-    new Project('Cloud test',
+    new Project(
+        'Cloud test',
         'Try clouds in the garden',
         ProjectStatus.Completed,
         new Date(2017, 9, 30),
@@ -73,7 +75,16 @@ export function copyProject(project: Project): Promise<string> {
                     name = project.name + i++;
                 }
                 let newProjects = projects.map(p => p);
-                newProjects.push(new Project(name, project.description, ProjectStatus.Setup, project.start, project.images, project.interval));
+                newProjects.push(
+                    new Project(
+                        name,
+                        project.description,
+                        ProjectStatus.Setup,
+                        project.start,
+                        project.images,
+                        project.interval
+                    )
+                );
                 projects = newProjects;
                 resolve(name);
             },

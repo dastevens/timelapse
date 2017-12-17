@@ -12,7 +12,9 @@ export const DeleteProjectAction = actionCreator.async<DeleteProjectParams, stri
 
 const deleteProjectsWorker = wrapAsyncWorker<DeleteProjectParams, string, void>(
     DeleteProjectAction,
-    (params: DeleteProjectParams): Promise<string> => apiDeleteProject(params.projectName).then(() => params.projectName)
+    (params: DeleteProjectParams): Promise<string> =>
+        apiDeleteProject(params.projectName)
+            .then(() => params.projectName)
 );
 
 export const deleteProject = (projectName: string) => {

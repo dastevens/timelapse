@@ -19,8 +19,8 @@ export const projectReducer = reducerWithInitialState<ProjectState>({
     .case(CreateProjectAction, (state: ProjectState, payload: { }) => ({
         ...state,
         project: new Project(
-            "",
-            "",
+            '',
+            '',
             ProjectStatus.Setup,
             new Date(),
             1000,

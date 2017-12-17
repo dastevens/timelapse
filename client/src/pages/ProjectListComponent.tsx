@@ -57,18 +57,19 @@ export const ProjectListComponent = (props: Fields & Events) => (
                     bsStyle={getStatusValue(project.status, Setting.bsStyle)}
                 >
                     <Glyphicon
-                        glyph={getStatusValue(project.status, Setting.glyph)} />
+                        glyph={getStatusValue(project.status, Setting.glyph)}
+                    />
                     {project.name}
                     <ToolbarButton
-                        glyph='cog'
+                        glyph="cog"
                         onClick={() => props.selectProject(project)}
-                        />
+                    />
                     <ToolbarButton
-                        glyph='remove'
+                        glyph="remove"
                         disabled={!project.canDelete()}
                         onClick={() => props.deleteProject(project.name)}
-                        confirm='Are you sure?'
-                        />
+                        confirm={'Are you sure you want to delete ' + project.name + '?'}
+                    />
                 </ListGroupItem>
             )
         }

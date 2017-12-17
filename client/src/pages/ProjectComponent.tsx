@@ -54,7 +54,11 @@ export interface Events {
 const EditControl = (props: {name: string, type: string, value: string, onChange: (value: string) => void}) => (
     <FormGroup>
         <ControlLabel>{props.name}</ControlLabel>
-        <FormControl type={props.type} value={props.value} onChange={(event) => props.onChange((event.target as any).value)} />
+        <FormControl
+            onChange={(event) => props.onChange((event.target as any).value as string)}
+            type={props.type}
+            value={props.value}
+        />
     </FormGroup>
 );
 
@@ -71,23 +75,23 @@ const ButtonControl = (props: {label: string, enabled: boolean, glyph: string, s
     </Button>
 );
 
-const pad = (value: number): string => (value < 10 ? "0" : "") + value;
+const pad = (value: number): string => (value < 10 ? '0' : '') + value;
 const dateToValue = (date: Date): string => {
-    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
-}
+    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
+};
 const timeToValue = (date: Date): string => {
-    return pad(date.getHours()) + ":" + pad(date.getMinutes()) + ":" + pad(date.getSeconds());
-}
+    return pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+};
 
 const valueToDate = (dateString: string, timeString: string): Date => {
-    var year = parseInt(dateString.substr(0, 4));
-    var month = parseInt(dateString.substr(5, 2));
-    var date = parseInt(dateString.substr(8, 2));
-    var hour = parseInt(timeString.substr(0, 2));
-    var minute = parseInt(timeString.substr(3, 2));
-    var second = parseInt(timeString.substr(6, 2));
+    var year = parseInt(dateString.substr(0, 4), 0);
+    var month = parseInt(dateString.substr(5, 2), 0);
+    var date = parseInt(dateString.substr(8, 2), 0);
+    var hour = parseInt(timeString.substr(0, 2), 0);
+    var minute = parseInt(timeString.substr(3, 2), 0);
+    var second = parseInt(timeString.substr(6, 2), 0);
     return new Date(year, month - 1, date, hour, minute, second);
-}
+};
 
 export const ProjectComponent = (props: Fields & Events) => {
 
@@ -112,20 +116,88 @@ export const ProjectComponent = (props: Fields & Events) => {
             >
 
                 <form>
-                    <EditControl name="Name" type="input" value={project.name} onChange={(name) => props.onNameChange(name)} />
-                    <EditControl name="Description" type="input" value={project.description} onChange={(name) => props.onDescriptionChange(name)} />
-                    <EditControl name="Start date" type="date" value={dateToValue(project.start)} onChange={(dateString) => props.onStartChange(valueToDate(dateString, timeToValue(project.start)))} />
-                    <EditControl name="Start time" type="time" value={timeToValue(project.start)} onChange={(timeString) => props.onStartChange(valueToDate(dateToValue(project.start), timeString))} />
-                    <EditControl name="Number of images" type="number" value={project.images.toString()} onChange={(imagesString) => props.onImagesChange(parseInt(imagesString))} />
-                    <EditControl name="Interval (s)" type="number" value={project.interval.toString()} onChange={(intervalString) => props.onIntervalChange(parseInt(intervalString))} />
-                    <StaticControl name="End" value={project.getEnd().toLocaleString()} />
-                    <StaticControl name="Total time (s)" value={project.getTotalInterval().toString()} />
-                    <ButtonControl label="Save" enabled={project.canEdit()} glyph="save" style="primary" />
-                    <ButtonControl label="Copy" enabled={project.canCopy()} glyph="duplicate" style="primary" />
-                    <ButtonControl label="Preview" enabled={project.canPreview()} glyph="camera" style="warning" />
-                    <ButtonControl label="Start" enabled={project.canStart()} glyph="play" style="danger" />
-                    <ButtonControl label="Stop" enabled={project.canStop()} glyph="stop" style="danger" />
-                    <ButtonControl label="Delete" enabled={project.canDelete()} glyph="trash" style="danger" />
+                    <EditControl
+                        name="Name"
+                        onChange={(name) => props.onNameChange(name)}
+                        type="input"
+                        value={project.name}
+                    />
+                    <EditControl
+                        name="Description"
+                        onChange={(name) => props.onDescriptionChange(name)}
+                        type="input"
+                        value={project.description}
+                    />
+                    <EditControl
+                        name="Start date"
+                        onChange={(dateString) => props.onStartChange(
+                            valueToDate(dateString, timeToValue(project.start)))}
+                        type="date"
+                        value={dateToValue(project.start)}
+                    />
+                    <EditControl
+                        name="Start time"
+                        onChange={(timeString) => props.onStartChange(
+                            valueToDate(dateToValue(project.start), timeString))}
+                        type="time"
+                        value={timeToValue(project.start)}
+                    />
+                    <EditControl
+                        name="Number of images"
+                        onChange={(imagesString) => props.onImagesChange(parseInt(imagesString, 0))}
+                        type="number"
+                        value={project.images.toString()}
+                    />
+                    <EditControl
+                        name="Interval (s)"
+                        onChange={(intervalString) => props.onIntervalChange(parseInt(intervalString, 0))}
+                        type="number"
+                        value={project.interval.toString()}
+                    />
+                    <StaticControl
+                        name="End"
+                        value={project.getEnd().toLocaleString()}
+                    />
+                    <StaticControl
+                        name="Total time (s)"
+                        value={project.getTotalInterval().toString()}
+                    />
+                    <ButtonControl
+                        enabled={project.canEdit()}
+                        glyph="save"
+                        label="Save"
+                        style="primary"
+                    />
+                    <ButtonControl
+                        enabled={project.canCopy()}
+                        glyph="duplicate"
+                        label="Copy"
+                        style="primary"
+                    />
+                    <ButtonControl
+                        enabled={project.canPreview()}
+                        glyph="camera"
+                        label="Preview"
+                        style="warning"
+                    />
+                    <ButtonControl
+                        enabled={project.canStart()}
+                        glyph="play"
+                        label="Start"
+                        style="danger"
+                    />
+                    <ButtonControl
+                        enabled={project.canStop()}
+                        glyph="stop"
+                        label="Stop"
+                        style="danger"
+                    />
+                    <ButtonControl
+                        enabled={project.canDelete()}
+                        glyph="trash"
+                        label="Delete"
+                        style="danger"
+                    />
                 </form>
             </Panel>
         );
