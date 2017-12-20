@@ -82,20 +82,23 @@ const ButtonControl = (props: {
     onClick: () => void,
     style: string,
     visible: boolean,
-}) => (
-    <Button
-        bsStyle={props.style}
-        hidden={!props.visible}
-        onClick={() => {
-            if (confirm === undefined) {
-                props.onClick();
-            } else if (confirm(props.confirm)) {
-                props.onClick();
-            }
-        }}
-    >
+}) => (<span>{
+    props.visible
+    ?
+        <Button
+            bsStyle={props.style}
+            onClick={() => {
+                if (confirm === undefined) {
+                    props.onClick();
+                } else if (confirm(props.confirm)) {
+                    props.onClick();
+                }
+            }}
+        >
         <Glyphicon glyph={props.glyph}/> {props.label}
     </Button>
+            : null
+    }</span>
 );
 
 const pad = (value: number): string => (value < 10 ? '0' : '') + value;
