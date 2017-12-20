@@ -1,7 +1,5 @@
 import * as React from 'react';
 import {
-    Button,
-    ButtonGroup,
     Glyphicon,
     ListGroup,
     ListGroupItem
@@ -21,26 +19,8 @@ export interface Fields {
 
 export interface Events {
     createProject: () => void;
-    deleteProject: (name: string) => void;
     selectProject: (project?: Project) => void;
 }
-
-const ToolbarButton = (props: { glyph: string, disabled?: boolean, onClick: () => void, confirm?: string }) => (
-    <Button
-        disabled={props.disabled}
-        onClick={() => {
-            if (props.confirm === undefined) {
-                props.onClick();
-            } else {
-                if (confirm(props.confirm)) { props.onClick(); }
-            }
-        }}
-    >
-        <Glyphicon
-            glyph={props.glyph}
-        />
-    </Button>
-);
 
 export const ProjectListComponent = (props: Fields & Events) => (
     <ListGroup>
@@ -54,25 +34,14 @@ export const ProjectListComponent = (props: Fields & Events) => (
         {
             props.projects.map(project =>
                 <ListGroupItem
-                    key={project.name}
                     bsStyle={getStatusValue(project.status, Setting.bsStyle)}
+                    key={project.name}
+                    onClick={() => props.selectProject(project)}
                 >
                     <Glyphicon
                         glyph={getStatusValue(project.status, Setting.glyph)}
-                    />
+                    />&nbsp;
                     {project.name}
-                    <ButtonGroup>
-                        <ToolbarButton
-                            glyph="cog"
-                            onClick={() => props.selectProject(project)}
-                        />
-                        <ToolbarButton
-                            glyph="remove"
-                            disabled={!project.canDelete()}
-                            onClick={() => props.deleteProject(project.name)}
-                            confirm={'Are you sure you want to delete ' + project.name + '?'}
-                        />
-                    </ButtonGroup>
                 </ListGroupItem>
             )
         }

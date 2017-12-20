@@ -8,7 +8,6 @@ import {
 } from './ProjectListComponent';
 import { Project } from '../model/Project';
 import { createProject } from '../redux/CreateProjectAction';
-import { deleteProject } from '../redux/DeleteProjectAction';
 import { selectProject } from '../redux/SelectProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
@@ -18,7 +17,6 @@ const mapStateToProps = (state: StoreState): Fields => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
         createProject: () => dispatch(createProject()),
-        deleteProject: (projectName: string) => dispatch(deleteProject(projectName)),
         selectProject: (project?: Project) => dispatch(selectProject(project)),
     };
 };
