@@ -34,7 +34,7 @@ export function getProjectList(): Promise<Project[]> {
 export function createProject(name: string): Promise<Project> {
     return new Promise<Project>((resolve, reject) => {
         // Refuse if name already exists
-        if (projects.find(p => p.name === name) !== undefined) {
+        if (projects.find(p => p.name === name)) {
             reject('A project with name ' + name + ' already exists');
         } else {
             setTimeout(

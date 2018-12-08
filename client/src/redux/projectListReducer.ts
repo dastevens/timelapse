@@ -11,6 +11,7 @@ import {
 } from './DeleteProjectAction';
 import { LoadProjectsAction } from './LoadProjectsAction';
 import { CreateProjectAction, CreateProjectParams } from './CreateProjectAction';
+import { SaveProjectAction } from './SaveProjectAction';
 
 export const projectListReducer = reducerWithInitialState({
     loading: true,
@@ -43,6 +44,10 @@ export const projectListReducer = reducerWithInitialState({
     .case(LoadProjectsAction.failed, (state: ProjectListState, code: Failure<null, string>) => ({
         ...state,
         errorMessage: 'Error loading site list: ' + code.error
+    }))
+    .case(SaveProjectAction.done, (state: ProjectListState, payload: Success<Project, void>) => ({
+        ...state,
+        projects: state.projects.map(project => project.name !== payload.params.name ? project : payload.params),
     }))
     .case(DeleteProjectAction.done, (state: ProjectListState, payload: Success<DeleteProjectParams, string>) => ({
         ...state,

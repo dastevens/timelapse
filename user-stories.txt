@@ -3,7 +3,7 @@ User stories
 x As a user I can view the list of projects
 x As a user I can create and save a new project
 x As a user I can delete an existing project
-o As a user I can edit a project that has not been started
+x As a user I can edit a project that has not been started
 x As a user I can see the properties of an existing project
 o As a user I can start a project
 o As a user I can create a new project by copying an existing project

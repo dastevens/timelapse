@@ -88,7 +88,7 @@ const ButtonControl = (props: {
         <Button
             bsStyle={props.style}
             onClick={() => {
-                if (confirm === undefined) {
+                if (props.confirm === undefined) {
                     props.onClick();
                 } else if (confirm(props.confirm)) {
                     props.onClick();
