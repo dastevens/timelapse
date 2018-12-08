@@ -12,12 +12,14 @@ import { Project } from './model/Project';
 
 const mapStateToProps = (state: StoreState): Fields => ({
     projects: state.projectList.projects,
+    createProjectName: state.createProject.name,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
         selectProject: (project?: Project) => dispatch(selectProject(project)),
-        createProject: () => dispatch(createProject()),
+        setCreateProjectName: (name: string) => dispatch(createProject.setName(name)),
+        createProject: (name: string) => dispatch(createProject.create(name)),
     };
 };
 

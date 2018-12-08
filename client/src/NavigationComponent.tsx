@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+    FormControl,
     Nav,
     Navbar,
     NavDropdown,
@@ -11,10 +12,12 @@ import { Project } from './model/Project';
 
 export interface Fields {
     projects: Project[];
+    createProjectName: string;
 }
 export interface Events {
     selectProject: (project?: Project) => void;
-    createProject: () => void;
+    createProject: (name: string) => void;
+    setCreateProjectName: (name: string) => void;
 }
 
 export const NavigationComponent = (props: Fields & Events) => (
@@ -35,7 +38,15 @@ export const NavigationComponent = (props: Fields & Events) => (
                         )
                     }
                 </NavDropdown>
-                <NavItem onClick={() => props.createProject()}>New</NavItem>
+                <NavItem>
+                    <FormControl type="text"
+                        value={props.createProjectName}
+                        onChange={(event) => props.setCreateProjectName((event.target as any).value as string)}
+                        />
+                </NavItem>
+                <NavItem onClick={() => props.createProject(props.createProjectName)}>
+                New
+                </NavItem>
             </Nav>
         </Navbar.Collapse>
     </Navbar>

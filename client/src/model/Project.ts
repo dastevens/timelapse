@@ -11,11 +11,11 @@ export interface ProjectID {
 export class Project implements ProjectID {
     constructor(
         public readonly name: string,
-        public readonly description: string,
-        public readonly status: ProjectStatus,
-        public readonly start: Date,
-        public readonly images: number,
-        public readonly interval: number
+        public readonly description: string = '',
+        public readonly status: ProjectStatus = ProjectStatus.Setup,
+        public readonly start: Date = new Date(),
+        public readonly images: number = 1000,
+        public readonly interval: number = 1
     ) { }
 
     canEdit() {

@@ -7,7 +7,6 @@ import {
     ProjectListComponent
 } from './ProjectListComponent';
 import { Project } from '../model/Project';
-import { createProject } from '../redux/CreateProjectAction';
 import { selectProject } from '../redux/SelectProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
@@ -16,7 +15,7 @@ const mapStateToProps = (state: StoreState): Fields => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
-        createProject: () => dispatch(createProject()),
+        createProject: () => {},
         selectProject: (project?: Project) => dispatch(selectProject(project)),
     };
 };

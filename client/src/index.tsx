@@ -11,6 +11,7 @@ import { projectListReducer } from './redux/projectListReducer';
 import { projectReducer } from './redux/projectReducer';
 
 const reducers = combineReducers({
+    createProject: createProjectReducer,
     projectList: projectListReducer,
     project: projectReducer,
 });
@@ -29,4 +30,5 @@ ReactDOM.render(
 );
 
 import { loadProjects } from './redux/LoadProjectsAction';
+import { createProjectReducer } from './redux/createProjectReducer';
 store.dispatch(loadProjects());

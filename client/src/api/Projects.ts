@@ -31,18 +31,19 @@ export function getProjectList(): Promise<Project[]> {
     });
 }
 
-export function createProject(project: Project): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+export function createProject(name: string): Promise<Project> {
+    return new Promise<Project>((resolve, reject) => {
         // Refuse if name already exists
-        if (projects.find(p => p.name === project.name)) {
-            reject('A project with name ' + project.name + ' already exists');
+        if (projects.find(p => p.name === name) !== undefined) {
+            reject('A project with name ' + name + ' already exists');
         } else {
             setTimeout(
                 () => {
+                    let newProject = new Project(name);
                     let newProjects = projects.map(p => p);
-                    newProjects.push(project);
+                    newProjects.push(newProject);
                     projects = newProjects;
-                    resolve(project.name);
+                    resolve(newProject);
                 },
                 500
             );

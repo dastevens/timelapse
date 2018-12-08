@@ -1,5 +1,9 @@
 import { Project } from '../model/Project';
 
+export type CreateProjectState = {
+    name: string;
+};
+
 export type ProjectListState = {
     errorMessage: string;
     projects: Project[];
@@ -11,6 +15,7 @@ export type ProjectState = {
 };
 
 export type StoreState = {
+    createProject: CreateProjectState;
     project: ProjectState;
     projectList: ProjectListState;
 }
