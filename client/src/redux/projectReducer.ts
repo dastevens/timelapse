@@ -9,21 +9,21 @@ import {
 import { SelectProjectAction } from './SelectProjectAction';
 import { Project } from '../model/Project';
 import { ProjectState } from './StoreState';
+import { CreateProjectAction, CreateProjectParams } from './CreateProjectAction';
+import { Success } from 'typescript-fsa';
+import { DeleteProjectAction, DeleteProjectParams } from './DeleteProjectAction';
 
 export const projectReducer = reducerWithInitialState<ProjectState>({
     project: undefined,
 })
-    // .case(CreateProjectAction, (state: ProjectState, payload: { }) => ({
-    //     ...state,
-    //     project: new Project(
-    //         '',
-    //         '',
-    //         ProjectStatus.Setup,
-    //         new Date(),
-    //         1000,
-    //         1
-    //     )
-    // }))
+    .case(CreateProjectAction.done, (state: ProjectState, payload: Success<CreateProjectParams, Project>) => ({
+        ...state,
+        project: payload.result,
+    }))
+    .case(DeleteProjectAction.done, (state: ProjectState, payload: Success<DeleteProjectParams, string>) => ({
+        ...state,
+        project: undefined,
+    }))
     .case(SelectProjectAction, (state: ProjectState, payload: { project?: Project }) => ({
         ...state,
         project: payload.project === undefined
