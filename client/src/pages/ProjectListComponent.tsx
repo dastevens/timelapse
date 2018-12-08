@@ -6,7 +6,6 @@ import {
 } from 'react-bootstrap';
 import {
     Project,
-    ProjectStatus
 } from '../model/Project';
 import {
     getStatusValue,
@@ -24,13 +23,6 @@ export interface Events {
 
 export const ProjectListComponent = (props: Fields & Events) => (
     <ListGroup>
-        <ListGroupItem
-            key=""
-            onClick={() => props.createProject()}
-            bsStyle={getStatusValue(ProjectStatus.Setup, Setting.bsStyle)}
-        >
-            <Glyphicon glyph={getStatusValue(ProjectStatus.Setup, Setting.glyph)} /> New Project...
-        </ListGroupItem>
         {
             props.projects.map(project =>
                 <ListGroupItem
