@@ -6,8 +6,10 @@ import {
     FormControl,
     FormGroup,
     Glyphicon,
+    Image,
     Panel,
     ProgressBar,
+    Modal,
 } from 'react-bootstrap';
 import {
     Project,
@@ -42,11 +44,13 @@ export function getStatusValue(status: ProjectStatus, setting: Setting): string 
 
 export interface Fields {
     project?: Project;
+    privewUrl?: string;
 }
 
 export interface Events {
     onDelete: (name: string) => void;
     onDescriptionChange: (description: string) => void;
+    onDismissPreview: () => void;
     onImagesChange: (images: number) => void;
     onIntervalChange: (interval: number) => void;
     onNameChange: (name: string) => void;
@@ -227,6 +231,20 @@ export const ProjectComponent = (props: Fields & Events) => {
                         />
                     </ButtonGroup>
                 </form>
+                {
+                    props.privewUrl === undefined ? null :
+                    <Modal.Dialog>
+                        <Modal.Header>
+                            <Modal.Title>Preview</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body><Image src={props.privewUrl}/></Modal.Body>
+                
+                        <Modal.Footer>
+                        <Button onClick={() => props.onDismissPreview()}>Close</Button>
+                        <Button onClick={() => props.onPreview(project.name)} bsStyle="primary">Reload</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                }
             </Panel>
         );
     }

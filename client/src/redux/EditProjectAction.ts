@@ -2,6 +2,7 @@ import { actionCreatorFactory } from 'typescript-fsa';
 
 const actionCreator = actionCreatorFactory();
 
+export const DismissPreviewAction = actionCreator<{}>('DismissPreviewName');
 export const SetProjectNameAction = actionCreator<{ name: string }>('SetProjectName');
 export const SetProjectDescriptionAction = actionCreator<{ description: string }>('SetProjectDescription');
 export const SetProjectStartAction = actionCreator<{ start: Date }>('SetProjectStart');
@@ -9,6 +10,7 @@ export const SetProjectImagesAction = actionCreator<{ images: number }>('SetProj
 export const SetProjectIntervalAction = actionCreator<{ interval: number }>('SetProjectInterval');
 
 export const editProject = {
+    dismissPreview: () => DismissPreviewAction({}),
     setName: (name: string) => SetProjectNameAction({ name }),
     setDescription: (description: string) => SetProjectDescriptionAction({ description }),
     setStart: (start: Date) => SetProjectStartAction({ start }),

@@ -12,6 +12,7 @@ export type ProjectListState = {
 
 export type ProjectState = {
     project?: Project;
+    previewUrl?: string;
 };
 
 export type StoreState = {

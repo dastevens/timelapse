@@ -4,17 +4,20 @@ import {
     SetProjectImagesAction,
     SetProjectIntervalAction,
     SetProjectNameAction,
-    SetProjectStartAction
+    SetProjectStartAction,
+    DismissPreviewAction
 } from '../redux/EditProjectAction';
 import { SelectProjectAction } from './SelectProjectAction';
-import { Project } from '../model/Project';
+import { Project, ProjectID } from '../model/Project';
 import { ProjectState } from './StoreState';
 import { CreateProjectAction, CreateProjectParams } from './CreateProjectAction';
 import { Success } from 'typescript-fsa';
 import { DeleteProjectAction, DeleteProjectParams } from './DeleteProjectAction';
+import { PreviewAction } from './ControlProjectAction';
 
 export const projectReducer = reducerWithInitialState<ProjectState>({
     project: undefined,
+    previewUrl: undefined,
 })
     .case(CreateProjectAction.done, (state: ProjectState, payload: Success<CreateProjectParams, Project>) => ({
         ...state,
@@ -23,6 +26,14 @@ export const projectReducer = reducerWithInitialState<ProjectState>({
     .case(DeleteProjectAction.done, (state: ProjectState, payload: Success<DeleteProjectParams, string>) => ({
         ...state,
         project: undefined,
+    }))
+    .case(DismissPreviewAction, (state: ProjectState, payload: Success<{}, string>) => ({
+        ...state,
+        previewUrl: undefined
+    }))
+    .case(PreviewAction.done, (state: ProjectState, payload: Success<ProjectID, string>) => ({
+        ...state,
+        previewUrl: payload.result
     }))
     .case(SelectProjectAction, (state: ProjectState, payload: { project?: Project }) => ({
         ...state,

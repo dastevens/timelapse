@@ -12,13 +12,15 @@ import { saveProject } from '../redux/SaveProjectAction';
 import { controlProject } from '../redux/ControlProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
-    project: state.project.project
+    project: state.project.project,
+    privewUrl: state.project.previewUrl,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
         onDelete: projectName => dispatch(deleteProject(projectName)),
         onDescriptionChange: description => dispatch(editProject.setDescription(description)),
+        onDismissPreview: () => dispatch(editProject.dismissPreview()),
         onImagesChange: images => dispatch(editProject.setImages(images)),
         onIntervalChange: interval => dispatch(editProject.setInterval(interval)),
         onNameChange: name => dispatch(editProject.setName(name)),
