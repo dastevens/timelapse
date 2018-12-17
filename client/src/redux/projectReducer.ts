@@ -39,78 +39,50 @@ export const projectReducer = reducerWithInitialState<ProjectState>({
         ...state,
         project: payload.project === undefined
             ? undefined
-            : new Project(
-                payload.project.name,
-                payload.project.description,
-                payload.project.status,
-                payload.project.start,
-                payload.project.images,
-                payload.project.interval
-            )
+            : payload.project
     }))
     .case(SetProjectDescriptionAction, (state: ProjectState, payload: { description: string }) => ({
         ...state,
         project: state.project === undefined
             ? undefined
-            : new Project(
-                state.project.name,
-                payload.description,
-                state.project.status,
-                state.project.start,
-                state.project.images,
-                state.project.interval
-            )
+            : { ...state.project,
+                description: payload.description
+            }
     }))
     .case(SetProjectImagesAction, (state: ProjectState, payload: { images: number }) => ({
         ...state,
         project: state.project === undefined
             ? undefined
-            : new Project(
-                state.project.name,
-                state.project.description,
-                state.project.status,
-                state.project.start,
-                payload.images,
-                state.project.interval
-            )
+            : {
+                ...state.project,
+                images: payload.images
+            }
     }))
     .case(SetProjectIntervalAction, (state: ProjectState, payload: { interval: number }) => ({
         ...state,
         project: state.project === undefined
             ? undefined
-            : new Project(
-                state.project.name,
-                state.project.description,
-                state.project.status,
-                state.project.start,
-                state.project.images,
-                payload.interval
-            )
+            : {
+                ...state.project,
+                interval: payload.interval
+            }
     }))
     .case(SetProjectNameAction, (state: ProjectState, payload: { name: string }) => ({
         ...state,
         project: state.project === undefined
             ? undefined
-            : new Project(
-                payload.name,
-                state.project.description,
-                state.project.status,
-                state.project.start,
-                state.project.images,
-                state.project.interval
-            )
+            : {
+                ...state.project,
+                payload: payload.name
+            }
     }))
     .case(SetProjectStartAction, (state: ProjectState, payload: { start: Date }) => ({
         ...state,
         project: state.project === undefined
             ? undefined
-            : new Project(
-                state.project.name,
-                state.project.description,
-                state.project.status,
-                isNaN(payload.start.getTime()) ? state.project.start : payload.start,
-                state.project.images,
-                state.project.interval
-            )
+            : {
+                ...state.project,
+                start: isNaN(payload.start.getTime()) ? state.project.start : payload.start,
+            }
     }))
 ;

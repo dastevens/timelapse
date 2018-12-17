@@ -3,8 +3,19 @@ import {
     ProjectStatus
 } from '../model/Project';
 
-let projects = [
-    new Project(
+class ApiProject implements Project {
+    constructor(
+        public readonly name: string,
+        public readonly description: string = '',
+        public readonly status: ProjectStatus = ProjectStatus.Setup,
+        public readonly start: Date = new Date(),
+        public readonly images: number = 1000,
+        public readonly interval: number = 1
+    ) { }
+}
+
+let projects: Project[] = [
+    new ApiProject(
         'Thor',
         'Rosa drawing Thor speeded up',
         ProjectStatus.Completed,
@@ -12,7 +23,7 @@ let projects = [
         1000,
         1
     ),
-    new Project(
+    new ApiProject(
         'Cloud test',
         'Try clouds in the garden',
         ProjectStatus.Completed,
@@ -39,7 +50,7 @@ export function createProject(name: string): Promise<Project> {
         } else {
             setTimeout(
                 () => {
-                    let newProject = new Project(name);
+                    let newProject = new ApiProject(name);
                     let newProjects = projects.map(p => p);
                     newProjects.push(newProject);
                     projects = newProjects;
@@ -51,14 +62,15 @@ export function createProject(name: string): Promise<Project> {
     });
 }
 
-export function updateProject(project: Project): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+export function updateProject(project: Project): Promise<Project> {
+    return new Promise<Project>((resolve, reject) => {
         setTimeout(
             () => {
+                let updatedProject = {...project};
                 projects = projects.map(p =>
-                    p.name === project.name ? project : p
+                    p.name === updatedProject.name ? updatedProject : p
                 );
-                resolve();
+                resolve(updatedProject);
             },
             500
         );
@@ -77,7 +89,7 @@ export function copyProject(project: Project): Promise<string> {
                 }
                 let newProjects = projects.map(p => p);
                 newProjects.push(
-                    new Project(
+                    new ApiProject(
                         name,
                         project.description,
                         ProjectStatus.Setup,

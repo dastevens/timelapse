@@ -6,11 +6,11 @@ import { Project } from '../model/Project';
 
 const actionCreator = actionCreatorFactory();
 
-export const SaveProjectAction = actionCreator.async<Project, void>('SaveProject');
+export const SaveProjectAction = actionCreator.async<Project, Project>('SaveProject');
 
-const saveProjectWorker = wrapAsyncWorker<Project, void, void>(
+const saveProjectWorker = wrapAsyncWorker<Project, Project, void>(
     SaveProjectAction,
-    (params: Project): Promise<void> =>
+    (params: Project): Promise<Project> =>
         apiSaveProject(params)
 );
 

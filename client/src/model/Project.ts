@@ -8,60 +8,57 @@ export interface ProjectID {
     name: string;
 }
 
-export class Project implements ProjectID {
-    constructor(
-        public readonly name: string,
-        public readonly description: string = '',
-        public readonly status: ProjectStatus = ProjectStatus.Setup,
-        public readonly start: Date = new Date(),
-        public readonly images: number = 1000,
-        public readonly interval: number = 1
-    ) { }
+export interface Project extends ProjectID {
+    readonly description: string;
+    readonly status: ProjectStatus;
+    readonly start: Date;
+    readonly images: number;
+    readonly interval: number;
+}
 
-    canEdit() {
-        return this.status === ProjectStatus.Setup;
-    }
+export function canEdit(project: Project) {
+    return project.status === ProjectStatus.Setup;
+}
 
-    canStart() {
-        return this.status === ProjectStatus.Setup;
-    }
+export function canStart(project: Project) {
+    return project.status === ProjectStatus.Setup;
+}
 
-    canStop() {
-        return this.status === ProjectStatus.Capturing;
-    }
+export function canStop(project: Project) {
+    return project.status === ProjectStatus.Capturing;
+}
 
-    canPreview() {
-        return this.status === ProjectStatus.Setup;
-    }
+export function canPreview(project: Project) {
+    return project.status === ProjectStatus.Setup;
+}
 
-    canDelete() {
-        return this.status !== ProjectStatus.Capturing;
-    }
+export function canDelete(project: Project) {
+    return project.status !== ProjectStatus.Capturing;
+}
 
-    canCopy() {
-        return true;
-    }
+export function canCopy(project: Project) {
+    return true;
+}
 
-    isCapturing() {
-        return this.status === ProjectStatus.Capturing;
-    }
+export function isCapturing(project: Project) {
+    return project.status === ProjectStatus.Capturing;
+}
 
-    isCompleted() {
-        return this.status === ProjectStatus.Completed;
-    }
+export function isCompleted(project: Project) {
+    return project.status === ProjectStatus.Completed;
+}
 
-    getEnd(): Date {
-        return new Date(this.start.getTime() + this.images * this.interval * 1000);
-    }
+export function getEnd(project: Project): Date {
+    return new Date(project.start.getTime() + project.images * project.interval * 1000);
+}
 
-    getTotalInterval(): number {
-        return this.images * this.interval;
-    }
+export function getTotalInterval(project: Project): number {
+    return project.images * project.interval;
+}
 
-    getProgress(): number {
-        let now = new Date().getTime();
-        if (now < this.start.getTime()) { return 0; }
-        if (now > this.getEnd().getTime()) { return 1; }
-        return (now - this.start.getTime()) / (this.getTotalInterval() * 1000);
-    }
+export function getProgress(project: Project): number {
+    let now = new Date().getTime();
+    if (now < project.start.getTime()) { return 0; }
+    if (now > getEnd(project).getTime()) { return 1; }
+    return (now - project.start.getTime()) / (getTotalInterval(project) * 1000);
 }

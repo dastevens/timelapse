@@ -45,9 +45,9 @@ export const projectListReducer = reducerWithInitialState({
         ...state,
         errorMessage: 'Error loading site list: ' + code.error
     }))
-    .case(SaveProjectAction.done, (state: ProjectListState, payload: Success<Project, void>) => ({
+    .case(SaveProjectAction.done, (state: ProjectListState, payload: Success<Project, Project>) => ({
         ...state,
-        projects: state.projects.map(project => project.name !== payload.params.name ? project : payload.params),
+        projects: state.projects.map(project => project.name !== payload.params.name ? project : payload.result),
     }))
     .case(DeleteProjectAction.done, (state: ProjectListState, payload: Success<DeleteProjectParams, string>) => ({
         ...state,

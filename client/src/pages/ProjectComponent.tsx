@@ -13,7 +13,15 @@ import {
 } from 'react-bootstrap';
 import {
     Project,
-    ProjectStatus
+    ProjectStatus,
+    getProgress,
+    getEnd,
+    getTotalInterval,
+    canEdit,
+    canPreview,
+    canStart,
+    canStop,
+    canDelete
 } from '../model/Project';
 
 interface StatusSettings {
@@ -139,7 +147,7 @@ export const ProjectComponent = (props: Fields & Events) => {
                             striped={true}
                             bsStyle={getStatusValue(project.status, Setting.bsStyle)}
                             active={project.status === ProjectStatus.Capturing}
-                            now={project.getProgress() * 100}
+                            now={getProgress(project) * 100}
                         />
                     </div>}
                 bsStyle={getStatusValue(project.status, Setting.bsStyle)}
@@ -186,11 +194,11 @@ export const ProjectComponent = (props: Fields & Events) => {
                     />
                     <StaticControl
                         name="End"
-                        value={project.getEnd().toLocaleString()}
+                        value={getEnd(project).toLocaleString()}
                     />
                     <StaticControl
                         name="Total time (s)"
-                        value={project.getTotalInterval().toString()}
+                        value={getTotalInterval(project).toString()}
                     />
                     <ButtonGroup>
                         <ButtonControl
@@ -198,28 +206,28 @@ export const ProjectComponent = (props: Fields & Events) => {
                             label="Save"
                             onClick={() => props.onSave(project)}
                             style="primary"
-                            visible={project.canEdit()}
+                            visible={canEdit(project)}
                         />
                         <ButtonControl
                             glyph="camera"
                             label="Preview"
                             onClick={() => props.onPreview(project.name)}
                             style="warning"
-                            visible={project.canPreview()}
+                            visible={canPreview(project)}
                         />
                         <ButtonControl
                             glyph="play"
                             label="Start"
                             onClick={() => props.onStart(project.name)}
                             style="danger"
-                            visible={project.canStart()}
+                            visible={canStart(project)}
                         />
                         <ButtonControl
                             glyph="stop"
                             label="Stop"
                             onClick={() => props.onStop(project.name)}
                             style="danger"
-                            visible={project.canStop()}
+                            visible={canStop(project)}
                         />
                         <ButtonControl
                             confirm={'Are you sure you want to delete ' + project.name + '?'}
@@ -227,7 +235,7 @@ export const ProjectComponent = (props: Fields & Events) => {
                             label="Delete"
                             onClick={() => props.onDelete(project.name)}
                             style="danger"
-                            visible={project.canDelete()}
+                            visible={canDelete(project)}
                         />
                     </ButtonGroup>
                 </form>
