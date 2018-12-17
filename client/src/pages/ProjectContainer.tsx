@@ -10,6 +10,7 @@ import { deleteProject } from '../redux/DeleteProjectAction';
 import { editProject } from '../redux/EditProjectAction';
 import { saveProject } from '../redux/SaveProjectAction';
 import { controlProject } from '../redux/ControlProjectAction';
+import { copyProject } from '../redux/CopyProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
     project: state.project.project,
@@ -18,6 +19,7 @@ const mapStateToProps = (state: StoreState): Fields => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
     return {
+        onCopy: project => dispatch(copyProject(project)),
         onDelete: projectName => dispatch(deleteProject(projectName)),
         onDescriptionChange: description => dispatch(editProject.setDescription(description)),
         onDismissPreview: () => dispatch(editProject.dismissPreview()),

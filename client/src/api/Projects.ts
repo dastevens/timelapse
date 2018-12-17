@@ -77,8 +77,8 @@ export function updateProject(project: Project): Promise<Project> {
     });
 }
 
-export function copyProject(project: Project): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+export function copyProject(project: Project): Promise<Project> {
+    return new Promise<Project>((resolve, reject) => {
         setTimeout(
             () => {
                 // Rename with a number at the end
@@ -87,19 +87,18 @@ export function copyProject(project: Project): Promise<string> {
                 while (projects.find(p => p.name === name)) {
                     name = project.name + i++;
                 }
-                let newProjects = projects.map(p => p);
-                newProjects.push(
-                    new ApiProject(
-                        name,
-                        project.description,
-                        ProjectStatus.Setup,
-                        project.start,
-                        project.images,
-                        project.interval
-                    )
+                let newProject = new ApiProject(
+                    name,
+                    project.description,
+                    ProjectStatus.Setup,
+                    project.start,
+                    project.images,
+                    project.interval
                 );
+                let newProjects = projects.map(p => p);
+                newProjects.push(newProject);
                 projects = newProjects;
-                resolve(name);
+                resolve(newProject);
             },
             500
         );

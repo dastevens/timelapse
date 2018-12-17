@@ -12,12 +12,22 @@ import {
 import { LoadProjectsAction } from './LoadProjectsAction';
 import { CreateProjectAction, CreateProjectParams } from './CreateProjectAction';
 import { SaveProjectAction } from './SaveProjectAction';
+import { CopyProjectAction } from './CopyProjectAction';
 
 export const projectListReducer = reducerWithInitialState({
     loading: true,
     projects: new Array<Project>(),
     errorMessage: ''
 })
+    .case(CopyProjectAction.started, (state: ProjectListState, dummy: null) => ({
+        ...state,
+        loading: true
+    }))
+    .case(CopyProjectAction.done, (state: ProjectListState, payload: Success<Project, Project>) => ({
+        ...state,
+        projects: state.projects.concat([payload.result]).sort((a, b) => a.name.localeCompare(b.name)),
+        loading: false
+    }))
     .case(CreateProjectAction.started, (state: ProjectListState, dummy: null) => ({
         ...state,
         loading: true

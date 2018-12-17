@@ -1,13 +1,13 @@
 User stories
-
-x As a user I can view the list of projects
-x As a user I can create and save a new project
-x As a user I can delete an existing project
-x As a user I can edit a project that has not been started
-x As a user I can see the properties of an existing project
-o As a user I can start a project
-o As a user I can create a new project by copying an existing project
-x As a user I can see a preview image before starting a project
-o As a user I can see the latest image when a project is being captured
-o As a user I can see the progress as a project is being captured
-o As a user I can review all the images of a project once capture is complete
+c s
+x o As a user I can view the list of projects
+x o As a user I can create and save a new project
+x o As a user I can delete an existing project
+x o As a user I can edit a project that has not been started
+x o As a user I can see the properties of an existing project
+o o As a user I can start a project
+x o As a user I can create a new project by copying an existing project
+x o As a user I can see a preview image before starting a project
+o o As a user I can see the latest image when a project is being captured
+o o As a user I can see the progress as a project is being captured
+o o As a user I can review all the images of a project once capture is complete

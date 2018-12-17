@@ -21,7 +21,8 @@ import {
     canPreview,
     canStart,
     canStop,
-    canDelete
+    canDelete,
+    canCopy
 } from '../model/Project';
 
 interface StatusSettings {
@@ -56,6 +57,7 @@ export interface Fields {
 }
 
 export interface Events {
+    onCopy: (project: Project) => void;
     onDelete: (name: string) => void;
     onDescriptionChange: (description: string) => void;
     onDismissPreview: () => void;
@@ -228,6 +230,13 @@ export const ProjectComponent = (props: Fields & Events) => {
                             onClick={() => props.onStop(project.name)}
                             style="danger"
                             visible={canStop(project)}
+                        />
+                        <ButtonControl
+                            glyph="copy"
+                            label="Copy"
+                            onClick={() => props.onCopy(project)}
+                            style="danger"
+                            visible={canCopy(project)}
                         />
                         <ButtonControl
                             confirm={'Are you sure you want to delete ' + project.name + '?'}

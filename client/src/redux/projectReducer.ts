@@ -14,11 +14,16 @@ import { CreateProjectAction, CreateProjectParams } from './CreateProjectAction'
 import { Success } from 'typescript-fsa';
 import { DeleteProjectAction, DeleteProjectParams } from './DeleteProjectAction';
 import { PreviewAction } from './ControlProjectAction';
+import { CopyProjectAction } from './CopyProjectAction';
 
 export const projectReducer = reducerWithInitialState<ProjectState>({
     project: undefined,
     previewUrl: undefined,
 })
+    .case(CopyProjectAction.done, (state: ProjectState, payload: Success<Project, Project>) => ({
+        ...state,
+        project: payload.result,
+    }))
     .case(CreateProjectAction.done, (state: ProjectState, payload: Success<CreateProjectParams, Project>) => ({
         ...state,
         project: payload.result,
@@ -73,7 +78,7 @@ export const projectReducer = reducerWithInitialState<ProjectState>({
             ? undefined
             : {
                 ...state.project,
-                payload: payload.name
+                name: payload.name
             }
     }))
     .case(SetProjectStartAction, (state: ProjectState, payload: { start: Date }) => ({
