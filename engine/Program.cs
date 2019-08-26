@@ -15,9 +15,12 @@ namespace engine
             var projectsFolder = fileSystem.Path.GetFullPath("projects");
             fileSystem.Directory.CreateDirectory(projectsFolder);
             var queue = new Queue(fileSystem, projectsFolder);
+            await queue.PushAsync(new Project(new ProjectId("Project 0"), "description", DateTime.Now.AddSeconds(5), 5, TimeSpan.FromSeconds(1)));
             await queue.PushAsync(new Project(new ProjectId("Project 1"), "description", DateTime.Now.AddSeconds(30), 3, TimeSpan.FromSeconds(5)));
             await queue.PushAsync(new Project(new ProjectId("Project 2"), "description", DateTime.Now.AddSeconds(60), 2, TimeSpan.FromSeconds(2)));
-            var scheduler = new Scheduler(queue, new FakeCamera());
+            var jobFolder = fileSystem.Path.GetFullPath("jobs");
+            var camera = new WebCam();
+            var scheduler = new Scheduler(fileSystem, jobFolder, queue, camera);
             Logger.Info("Starting scheduler");
             await scheduler.StartAsync();
         }
@@ -25,9 +28,9 @@ namespace engine
         private class FakeCamera : ICamera
         {
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-            public Task Capture()
+            public Task Capture(string saveJpegFileAs)
             {
-                Logger.Info("Click");
+                Logger.Info($"Click: {saveJpegFileAs}");
                 return Task.CompletedTask;
             }
         }

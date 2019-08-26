@@ -7,6 +7,6 @@ namespace engine
 {
     public interface ICamera
     {
-        Task Capture();
+        Task Capture(string saveJpegFileAs);
     }
 }

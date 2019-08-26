@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,19 +10,25 @@ namespace engine
     public class Job
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly IFileSystem fileSystem;
+        private readonly string projectFolder;
         private readonly Project project;
 
-        public Job(Project project)
+        public Job(IFileSystem fileSystem, string projectFolder, Project project)
         {
+            this.fileSystem = fileSystem;
+            this.projectFolder = projectFolder;
             this.project = project;
         }
 
         public async Task StartAsync(ICamera camera)
         {
+            fileSystem.Directory.CreateDirectory(projectFolder);
             for (var i = 0; i < project.Images; i++)
             {
-                Logger.Info($"{project.ProjectId.Name} {i + 1}/{project.Images}");
-                await camera.Capture();
+                var imageName = fileSystem.Path.Combine(projectFolder, $"{i:D4}.jpg");
+                Logger.Info(imageName);
+                await camera.Capture(imageName);
                 await Task.Delay(project.Interval);
             }
         }
