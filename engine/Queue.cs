@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace engine
@@ -73,9 +74,9 @@ namespace engine
             });
         }
 
-        public async Task<Project> PopAsync()
+        public async Task<Project> PopAsync(CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var front = (await ReadQueueAsync())
                     .ToArray()
@@ -91,9 +92,10 @@ namespace engine
                 }
                 else
                 {
-                    await Task.Delay(checkPeriod);
+                    await Task.Delay(checkPeriod, cancellationToken);
                 }
             }
+            return await Task.FromCanceled<Project>(cancellationToken);
         }
     }
 }

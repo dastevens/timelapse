@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace engine
@@ -21,15 +22,15 @@ namespace engine
             this.project = project;
         }
 
-        public async Task StartAsync(ICamera camera)
+        public async Task StartAsync(ICamera camera, CancellationToken cancellationToken)
         {
             fileSystem.Directory.CreateDirectory(projectFolder);
-            for (var i = 0; i < project.Images; i++)
+            for (var i = 0; (i < project.Images) && !cancellationToken.IsCancellationRequested; i++)
             {
                 var imageName = fileSystem.Path.Combine(projectFolder, $"{i:D4}.jpg");
                 Logger.Info(imageName);
                 await camera.Capture(imageName);
-                await Task.Delay(project.Interval);
+                await Task.Delay(project.Interval, cancellationToken);
             }
         }
     }

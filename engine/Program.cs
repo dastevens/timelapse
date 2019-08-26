@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace engine
@@ -9,6 +10,31 @@ namespace engine
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         static async Task Main(string[] args)
+        {
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                var keyBoardTask = Task.Run(() =>
+                {
+                    Console.WriteLine("Press enter to cancel");
+                    Console.ReadKey();
+                    Console.WriteLine("Cancelled");
+                    cancellationTokenSource.Cancel();
+                });
+
+                try
+                {
+                    await RunEngineAsync(cancellationTokenSource.Token);
+                }
+                catch (TaskCanceledException)
+                {
+                    Console.WriteLine("Task was cancelled");
+                }
+
+                await keyBoardTask;
+            }
+        }
+
+        static async Task RunEngineAsync(CancellationToken cancellationToken)
         {
             Logger.Info("Creating queue");
             var fileSystem = new System.IO.Abstractions.FileSystem();
@@ -22,7 +48,7 @@ namespace engine
             var camera = new WebCam();
             var scheduler = new Scheduler(fileSystem, jobFolder, queue, camera);
             Logger.Info("Starting scheduler");
-            await scheduler.StartAsync();
+            await scheduler.StartAsync(cancellationToken);
         }
 
         private class FakeCamera : ICamera

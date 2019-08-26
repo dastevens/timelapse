@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace engine
@@ -24,23 +25,23 @@ namespace engine
             this.camera = camera;
         }
 
-        public async Task StartAsync()
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             await Task.Run(() => fileSystem.Directory.CreateDirectory(jobFolder));
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                await Sweep();
-                await Task.Delay(checkQueuePeriod);
+                await Sweep(cancellationToken);
+                await Task.Delay(checkQueuePeriod, cancellationToken);
             }
         }
 
-        private async Task Sweep()
+        private async Task Sweep(CancellationToken cancellationToken)
         {
-            var project = await queue.PopAsync();
+            var project = await queue.PopAsync(cancellationToken);
             var projectFolder = fileSystem.Path.Combine(jobFolder, project.ProjectId.Name);
             var job = new Job(fileSystem, projectFolder, project);
             Logger.Info($"Starting job {project.ProjectId.Name}");
-            await job.StartAsync(camera);
+            await job.StartAsync(camera, cancellationToken);
             Logger.Info($"Completed job {project.ProjectId.Name}");
         }
     }
