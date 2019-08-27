@@ -41,13 +41,14 @@ namespace engine
             var queueFolder = fileSystem.Path.GetFullPath("queue");
             fileSystem.Directory.CreateDirectory(queueFolder);
             var queue = new Queue(fileSystem, queueFolder);
-            await queue.PushAsync(new Project(new ProjectId("Project 0"), "description", DateTime.Now.AddSeconds(-5), 5, TimeSpan.FromMilliseconds(2000)));
-            await queue.PushAsync(new Project(new ProjectId("Project 1"), "description", DateTime.Now.AddSeconds(5), 5, TimeSpan.FromMilliseconds(2000)));
+            await queue.PushAsync(new Project(new ProjectId("Test"), "Try some stuff out", DateTime.Now.AddSeconds(5), 100, TimeSpan.FromMilliseconds(100)));
             var jobFolder = fileSystem.Path.GetFullPath("projects");
-            var camera = new WebCam();
-            var scheduler = new Scheduler(fileSystem, jobFolder, queue, camera);
-            Logger.Info("Starting scheduler");
-            await scheduler.StartAsync(cancellationToken);
+            using (var camera = new WebCam())
+            {
+                var scheduler = new Scheduler(fileSystem, jobFolder, queue, camera);
+                Logger.Info("Starting scheduler");
+                await scheduler.StartAsync(cancellationToken);
+            }
         }
 
         private class FakeCamera : ICamera
