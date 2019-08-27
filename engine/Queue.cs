@@ -69,19 +69,26 @@ namespace engine
                 var front = (await ReadQueueAsync())
                     .ToArray()
                     .OrderBy(project => project.Start)
-                    .Where(project => project.Start < DateTime.Now.Add(checkPeriod).Add(checkPeriod))
                     .Take(1);
                 if (front.Any())
                 {
-                    var project = front.First();
-                    Logger.Info($"Popping project {project.ProjectId.Name}");
-                    await RemoveAsync(front.First().ProjectId);
-                    return front.First();
+                    var next = front.First();
+                    if (next.Start < DateTime.Now.Add(checkPeriod).Add(checkPeriod))
+                    {
+                        Logger.Info($"Popping project {next.ProjectId.Name}");
+                        await RemoveAsync(next.ProjectId);
+                        return next;
+                    }
+                    else
+                    {
+                        Logger.Info($"Next project {next.ProjectId.Name} starts at {next.Start.Subtract(DateTime.Now)}");
+                    }
                 }
                 else
                 {
-                    await Task.Delay(checkPeriod, cancellationToken);
+                    Logger.Info($"No projects in queue");
                 }
+                await Task.Delay(checkPeriod, cancellationToken);
             }
             return await Task.FromCanceled<Project>(cancellationToken);
         }

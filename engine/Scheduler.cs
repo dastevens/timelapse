@@ -15,7 +15,6 @@ namespace engine
         private readonly string jobFolder;
         private readonly Queue queue;
         private readonly ICamera camera;
-        private readonly TimeSpan checkQueuePeriod = TimeSpan.FromSeconds(10);
 
         public Scheduler(IFileSystem fileSystem, string jobFolder, Queue queue, ICamera camera)
         {
@@ -31,7 +30,6 @@ namespace engine
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Sweep(cancellationToken);
-                await Task.Delay(checkQueuePeriod, cancellationToken);
             }
         }
 
