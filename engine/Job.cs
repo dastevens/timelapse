@@ -24,13 +24,26 @@ namespace engine
 
         public async Task StartAsync(ICamera camera, CancellationToken cancellationToken)
         {
+            Logger.Info($"Job {project.ProjectId.Name} started");
             fileSystem.Directory.CreateDirectory(projectFolder);
+            var projectFile = fileSystem.Path.Combine(projectFolder, $"{project.ProjectId.Name}.json");
+            await Project.SaveAs(fileSystem, project, projectFile);
+            var nextCapture = project.Start;
             for (var i = 0; (i < project.Images) && !cancellationToken.IsCancellationRequested; i++)
             {
+                var delay = nextCapture.Subtract(DateTime.Now);
                 var imageName = fileSystem.Path.Combine(projectFolder, $"{i:D4}.jpg");
-                Logger.Info(imageName);
-                await camera.Capture(imageName);
-                await Task.Delay(project.Interval, cancellationToken);
+                if (delay > TimeSpan.Zero)
+                {
+                    await Task.Delay(delay, cancellationToken);
+                    Logger.Info(imageName);
+                    await camera.Capture(imageName);
+                }
+                else
+                {
+                    Logger.Warn($"Missed {imageName} at {nextCapture.ToString("o")}");
+                }
+                nextCapture = nextCapture.Add(project.Interval);
             }
         }
     }

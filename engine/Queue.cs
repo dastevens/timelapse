@@ -14,11 +14,10 @@ namespace engine
     {
         private readonly static Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private const string projectFileExtension = "tlp";
+        private const string projectFileExtension = "json";
         private readonly TimeSpan checkPeriod = TimeSpan.FromSeconds(10);
         private readonly IFileSystem fileSystem;
         private readonly string path;
-        private readonly JsonSerializer serializer = new JsonSerializer();
 
         public Queue(IFileSystem fileSystem, string path)
         {
@@ -26,17 +25,11 @@ namespace engine
             this.path = path;
         }
 
-        public Task PushAsync(Project project)
+        public async Task PushAsync(Project project)
         {
-            return Task.Run(() =>
-            {
-                var projectFile = ProjectFile(project.ProjectId);
-                using (var streamWriter = fileSystem.File.CreateText(projectFile))
-                {
-                    Logger.Info($"Adding project file {projectFile}");
-                    serializer.Serialize(streamWriter, project);
-                }
-            });
+            var projectFile = ProjectFile(project.ProjectId);
+            Logger.Info($"Adding project file {projectFile}");
+            await Project.SaveAs(fileSystem, project, projectFile);
         }
 
         private string ProjectFile(ProjectId projectId)
@@ -44,21 +37,16 @@ namespace engine
             return fileSystem.Path.Combine(path, $"{projectId.Name}.{projectFileExtension}");
         }
 
-        public Task<IEnumerable<Project>> ReadQueueAsync()
+        public async Task<IEnumerable<Project>> ReadQueueAsync()
         {
-            return Task<IEnumerable<Project>>.Run(() =>
+            var projectFiles = fileSystem.DirectoryInfo.FromDirectoryName(path)
+                .EnumerateFiles($"*.{projectFileExtension}");
+            var projects = new List<Project>();
+            foreach (var projectFile in projectFiles)
             {
-                var projectFiles = fileSystem.DirectoryInfo.FromDirectoryName(path)
-                    .EnumerateFiles($"*.{projectFileExtension}");
-                return projectFiles
-                    .Select(projectFile =>
-                    {
-                        using (var streamReader = projectFile.OpenText())
-                        {
-                            return (Project)serializer.Deserialize(streamReader, typeof(Project));
-                        }
-                    });
-            });
+                projects.Add(await Project.ReadFrom(fileSystem, projectFile.FullName));
+            }
+            return projects;
         }
 
         public Task RemoveAsync(ProjectId projectId)
@@ -81,7 +69,7 @@ namespace engine
                 var front = (await ReadQueueAsync())
                     .ToArray()
                     .OrderBy(project => project.Start)
-                    .Where(project => project.Start.Add(checkPeriod) < DateTime.Now)
+                    .Where(project => project.Start < DateTime.Now.Add(checkPeriod).Add(checkPeriod))
                     .Take(1);
                 if (front.Any())
                 {
