@@ -47,8 +47,6 @@ namespace engine
             var queueFolder = fileSystem.Path.GetFullPath("queue");
             fileSystem.Directory.CreateDirectory(queueFolder);
             var queue = new Queue(fileSystem, queueFolder);
-            await queue.PushAsync(new Project(new ProjectId("Test"), "Try some stuff out", DateTime.Now.AddSeconds(2), 1000, TimeSpan.FromSeconds(1)));
-            await queue.PushAsync(new Project(new ProjectId("Sample"), "Try some stuff out", DateTime.Parse("2020-01-01"), 1000, TimeSpan.FromHours(0.008)));
             var jobFolder = fileSystem.Path.GetFullPath("projects");
             using (var camera = CreateCamera(fileSystem))
             {

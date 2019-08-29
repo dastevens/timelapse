@@ -15,4 +15,8 @@
     <ProjectReference Include="..\engine\engine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

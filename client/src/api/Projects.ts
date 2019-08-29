@@ -3,7 +3,7 @@ import {
     ProjectStatus
 } from '../model/Project';
 
-const apiUrl: string = 'https://localhost:44340/api';
+const apiUrl: string = '/api';
 
 interface IApiProject {
     projectId: {
@@ -20,11 +20,10 @@ class ApiProject implements Project {
         public readonly name: string,
         public readonly description: string = '',
         public readonly status: ProjectStatus = ProjectStatus.Setup,
-        public readonly start: Date = new Date(),
+        public readonly start: Date = new Date('2100-01-01'),
         public readonly images: number = 1000,
         public readonly interval: number = 1
     ) { }
-
 }
 
 function FromApi(apiProject: IApiProject): Project {
@@ -32,14 +31,38 @@ function FromApi(apiProject: IApiProject): Project {
         apiProject.projectId.name,
         apiProject.description,
         ProjectStatus.Setup,
-        new Date(apiProject.start),
+        StringToDate(apiProject.start),
         apiProject.images,
         TimeSpanToSeconds(apiProject.interval)
     );
 }
 
+function ToApi(project: Project): IApiProject {
+    return {
+      projectId: {
+          name: project.name,
+      },
+      description: project.description,
+      start: DateToString(project.start),
+      images: project.images,
+      interval: SecondsToTimeSpan(project.interval),
+    };
+}
+
+function DateToString(date: Date): string {
+    return '2100-01-01';
+}
+
+function StringToDate(string: string): Date {
+    return new Date(string);
+}
+
 function TimeSpanToSeconds(timeSpan: string): number {
     return 1;
+}
+
+function SecondsToTimeSpan(seconds: number): string {
+    return '00:00:01';
 }
 
 export function getProjectList(): Promise<Project[]> {
@@ -49,7 +72,6 @@ export function getProjectList(): Promise<Project[]> {
             if (response.status !== 200) {
                 throw response.statusText;
             }
-            // Convert to JSON
             return response.json();
         })
         .then(value => {
@@ -59,18 +81,15 @@ export function getProjectList(): Promise<Project[]> {
 
 export function createProject(name: string): Promise<Project> {
 
-    var project: IApiProject = {
-        description: '',
-        images: 1,
-        interval: '0:0:1',
-        projectId: {
-            name: name
-        },
-        start: '2100-01-01'
-    };
+    var project = ToApi(new ApiProject(name));
 
-    return fetch(apiUrl + '/projects/' + name, {
+    return fetch(apiUrl + '/projects', {
         method: 'POST',
+        body: JSON.stringify(project),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
     })
         .then(response => {
             if (response.status !== 200) {
@@ -81,17 +100,36 @@ export function createProject(name: string): Promise<Project> {
 }
 
 export function updateProject(project: Project): Promise<Project> {
-    throw 'Not implemented';
+    return fetch(apiUrl + '/projects/' + project.name, {
+        method: 'PUT',
+        body: JSON.stringify(ToApi(project)),
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    })
+        .then(response => {
+            if (response.status !== 200) {
+                throw response.statusText;
+            }
+            return project;
+        });
 }
 
 export function copyProject(project: Project): Promise<Project> {
     throw 'Not implemented';
 }
 
-export function deleteProject(name: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+export function deleteProject(name: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
         return fetch(apiUrl + '/projects/' + name, {
             method: 'DELETE'
+        })
+        .then(response => {
+            if (response.status !== 200) {
+                throw response.statusText;
+            }
+            return name;
         });
     });
 }
