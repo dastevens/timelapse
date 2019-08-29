@@ -73,6 +73,7 @@ const EditControl = (props: {name: string, type: string, value: string, onChange
         <FormControl
             onChange={(event) => props.onChange((event.target as any).value as string)}
             type={props.type}
+            step="1"
             value={props.value}
         />
     </FormGroup>
@@ -125,7 +126,7 @@ const valueToDate = (dateString: string, timeString: string): Date => {
     var date = parseInt(dateString.substr(8, 2), 0);
     var hour = parseInt(timeString.substr(0, 2), 0);
     var minute = parseInt(timeString.substr(3, 2), 0);
-    var second = parseInt(timeString.substr(6, 2), 0);
+    var second = timeString.length > 5 ? parseInt(timeString.substr(6, 2), 0) : 0;
     return new Date(year, month - 1, date, hour, minute, second);
 };
 
@@ -173,8 +174,9 @@ export const ProjectComponent = (props: Fields & Events) => {
                     />
                     <EditControl
                         name="Start time"
-                        onChange={(timeString) => props.onStartChange(
-                            valueToDate(dateToValue(project.start), timeString))}
+                        onChange={(timeString) => {
+                            console.log(timeString);
+                            props.onStartChange(valueToDate(dateToValue(project.start), timeString));}}
                         type="time"
                         value={timeToValue(project.start)}
                     />
