@@ -3,7 +3,7 @@ import {
     ProjectStatus
 } from '../model/Project';
 
-const apiUrl: string = '/api';
+const apiUrl: string = 'https://localhost:44340/api';
 
 interface IApiProject {
     projectId: {
@@ -20,7 +20,7 @@ class ApiProject implements Project {
         public readonly name: string,
         public readonly description: string = '',
         public readonly status: ProjectStatus = ProjectStatus.Setup,
-        public readonly start: Date = new Date('2100-01-01'),
+        public readonly start: Date = new Date('2020-01-01'),
         public readonly images: number = 1000,
         public readonly interval: number = 1
     ) { }
@@ -50,19 +50,34 @@ function ToApi(project: Project): IApiProject {
 }
 
 function DateToString(date: Date): string {
-    return '2100-01-01';
+    return date.toISOString();
 }
 
 function StringToDate(string: string): Date {
     return new Date(string);
 }
 
-function TimeSpanToSeconds(timeSpan: string): number {
-    return 1;
+export function TimeSpanToSeconds(timeSpan: string): number {
+    let parts = timeSpan.split(':');
+    let hoursDays = parts[0].split('.');
+    let days = hoursDays.length == 2 ? hoursDays[0] : '0';
+    let hours = hoursDays.length == 2 ? hoursDays[1] : hoursDays[0];
+    let minutes = parts[1];
+    let seconds = parts[2];
+    return parseFloat(seconds) + 60 * (parseInt(minutes) + 60 * (parseInt(hours) + 24 * parseInt(days)));
 }
 
-function SecondsToTimeSpan(seconds: number): string {
-    return '00:00:01';
+export function SecondsToTimeSpan(value: number): string {
+    let days = Math.floor(value / (24 * 60 * 60));
+    let hours = Math.floor((value / (60 * 60)) - days * 24);
+    let minutes = Math.floor((value / 60) - (days * 24  + hours) * 60);
+    let seconds = Math.floor(value - (((days * 24 + hours) * 60) + minutes) * 60);
+    let ms = value - Math.floor(value);
+    return (days > 0 ? days + '.' : '') + zeroPad(hours) + ':' + zeroPad(minutes) + ':' + zeroPad(seconds) + (ms > 0 ? '.' + ms.toString().substr(2) : '');
+}
+
+function zeroPad(val: number): string {
+    return ("00" + val).substr(-2);
 }
 
 export function getProjectList(): Promise<Project[]> {
