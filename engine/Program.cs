@@ -1,15 +1,21 @@
 ﻿using NLog;
 using System;
+using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace engine
 {
-    class Program
+    public class Program
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static async Task Main(string[] args)
+        static void Main(string[] args)
+        {
+            MainAsync().Wait();
+        }
+
+        static async Task MainAsync()
         {
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
@@ -41,9 +47,10 @@ namespace engine
             var queueFolder = fileSystem.Path.GetFullPath("queue");
             fileSystem.Directory.CreateDirectory(queueFolder);
             var queue = new Queue(fileSystem, queueFolder);
-            await queue.PushAsync(new Project(new ProjectId("Test"), "Try some stuff out", DateTime.Now.AddSeconds(5), 100, TimeSpan.FromMilliseconds(100)));
+            await queue.PushAsync(new Project(new ProjectId("Test"), "Try some stuff out", DateTime.Now.AddSeconds(2), 1000, TimeSpan.FromSeconds(1)));
+            await queue.PushAsync(new Project(new ProjectId("Sample"), "Try some stuff out", DateTime.Parse("2020-01-01"), 1000, TimeSpan.FromHours(0.008)));
             var jobFolder = fileSystem.Path.GetFullPath("projects");
-            using (var camera = new WebCam())
+            using (var camera = CreateCamera(fileSystem))
             {
                 var scheduler = new Scheduler(fileSystem, jobFolder, queue, camera);
                 Logger.Info("Starting scheduler");
@@ -51,13 +58,17 @@ namespace engine
             }
         }
 
-        private class FakeCamera : ICamera
+        public static ICamera CreateCamera(IFileSystem fileSystem)
         {
-            private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-            public Task Capture(string saveJpegFileAs)
+            Logger.Info($"Platform {Environment.OSVersion.Platform}");
+            switch (Environment.OSVersion.Platform)
             {
-                Logger.Info($"Click: {saveJpegFileAs}");
-                return Task.CompletedTask;
+                case PlatformID.Win32NT:
+                    return new WebCam();
+                case PlatformID.Unix:
+                    return new PiCamera(fileSystem);
+                default:
+                    throw new NotSupportedException($"Unsupported Platform {Environment.OSVersion.Platform}");
             }
         }
     }

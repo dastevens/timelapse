@@ -6,7 +6,7 @@ using OpenCvSharp;
 
 namespace engine
 {
-    class WebCam : ICamera, IDisposable
+    class WebCam : ICamera
     {
         VideoCapture capture = OpenCvSharp.VideoCapture.FromCamera(0);
 

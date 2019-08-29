@@ -81,7 +81,7 @@ namespace engine
                     }
                     else
                     {
-                        Logger.Info($"Next project {next.ProjectId.Name} starts at {next.Start.Subtract(DateTime.Now)}");
+                        Logger.Info($"Next project {next.ProjectId.Name} starts in {next.Start.Subtract(DateTime.Now)}");
                     }
                 }
                 else

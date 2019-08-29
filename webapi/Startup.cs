@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 using engine;
@@ -26,9 +27,24 @@ namespace webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<Queue>(new Queue(new System.IO.Abstractions.FileSystem(), Configuration.GetValue<string>("AppSettings:queue")));
+            var fileSystem = new FileSystem();
+            services.AddSingleton<IFileSystem>(fileSystem);
+            services.AddSingleton<Queue>(new Queue(fileSystem, GetAppSetting("queue")));
+            services.AddSingleton<CameraProvider>(new CameraProvider(fileSystem));
+        }
+
+        private string GetAppSetting(string key)
+        {
+            return Configuration.GetValue<string>($"AppSettings:{key}");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +60,7 @@ namespace webapi
                 app.UseHsts();
             }
 
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseMvc();
         }

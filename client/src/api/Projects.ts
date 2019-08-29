@@ -3,6 +3,18 @@ import {
     ProjectStatus
 } from '../model/Project';
 
+const apiUrl: string = 'https://localhost:44340/api';
+
+interface IApiProject {
+    projectId: {
+        name: string;
+    };
+    description: string;
+    start: string;
+    images: number;
+    interval: string;
+}
+
 class ApiProject implements Project {
     constructor(
         public readonly name: string,
@@ -12,140 +24,80 @@ class ApiProject implements Project {
         public readonly images: number = 1000,
         public readonly interval: number = 1
     ) { }
+
 }
 
-let projects: Project[] = [
-    new ApiProject(
-        'Thor',
-        'Rosa drawing Thor speeded up',
-        ProjectStatus.Completed,
-        new Date(2017, 9, 20),
-        1000,
-        1
-    ),
-    new ApiProject(
-        'Cloud test',
-        'Try clouds in the garden',
-        ProjectStatus.Completed,
-        new Date(2017, 9, 30),
-        1000,
-        1
-    ),
-];
+function FromApi(apiProject: IApiProject): Project {
+    return new ApiProject(
+        apiProject.projectId.name,
+        apiProject.description,
+        ProjectStatus.Setup,
+        new Date(apiProject.start),
+        apiProject.images,
+        TimeSpanToSeconds(apiProject.interval)
+    );
+}
+
+function TimeSpanToSeconds(timeSpan: string): number {
+    return 1;
+}
 
 export function getProjectList(): Promise<Project[]> {
-    return new Promise<Project[]>((resolve, reject) => {
-        setTimeout(
-            () => resolve(projects),
-            1000
-        );
-    });
+
+    return fetch(apiUrl + '/projects')
+        .then(response => {
+            if (response.status !== 200) {
+                throw response.statusText;
+            }
+            // Convert to JSON
+            return response.json();
+        })
+        .then(value => {
+            return (value as IApiProject[]).map(p => FromApi(p));
+        });
 }
 
 export function createProject(name: string): Promise<Project> {
-    return new Promise<Project>((resolve, reject) => {
-        // Refuse if name already exists
-        if (projects.find(p => p.name === name)) {
-            reject('A project with name ' + name + ' already exists');
-        } else {
-            setTimeout(
-                () => {
-                    let newProject = new ApiProject(name);
-                    let newProjects = projects.map(p => p);
-                    newProjects.push(newProject);
-                    projects = newProjects;
-                    resolve(newProject);
-                },
-                500
-            );
-        }
-    });
+
+    var project: IApiProject = {
+        description: '',
+        images: 1,
+        interval: '0:0:1',
+        projectId: {
+            name: name
+        },
+        start: '2100-01-01'
+    };
+
+    return fetch(apiUrl + '/projects/' + name, {
+        method: 'POST',
+    })
+        .then(response => {
+            if (response.status !== 200) {
+                throw response.statusText;
+            }
+            return FromApi(project);
+        });
 }
 
 export function updateProject(project: Project): Promise<Project> {
-    return new Promise<Project>((resolve, reject) => {
-        setTimeout(
-            () => {
-                let updatedProject = {...project};
-                projects = projects.map(p =>
-                    p.name === updatedProject.name ? updatedProject : p
-                );
-                resolve(updatedProject);
-            },
-            500
-        );
-    });
+    throw 'Not implemented';
 }
 
 export function copyProject(project: Project): Promise<Project> {
-    return new Promise<Project>((resolve, reject) => {
-        setTimeout(
-            () => {
-                // Rename with a number at the end
-                let i = 1;
-                let name = project.name;
-                while (projects.find(p => p.name === name)) {
-                    name = project.name + i++;
-                }
-                let newProject = new ApiProject(
-                    name,
-                    project.description,
-                    ProjectStatus.Setup,
-                    project.start,
-                    project.images,
-                    project.interval
-                );
-                let newProjects = projects.map(p => p);
-                newProjects.push(newProject);
-                projects = newProjects;
-                resolve(newProject);
-            },
-            500
-        );
-    });
+    throw 'Not implemented';
 }
 
 export function deleteProject(name: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-        setTimeout(
-            () => {
-                projects = projects.filter(p => p.name !== name);
-                resolve();
-            },
-            800
-        );
+        return fetch(apiUrl + '/projects/' + name, {
+            method: 'DELETE'
+        });
     });
 }
 
 export function previewProject(name: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        setTimeout(
-            () => {
-                resolve('preview.jpg');
-            },
-            600
-        );
-    });
-}
-
-export function startProject(name: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        setTimeout(
-            () => {
-                resolve();
-            },
-            1200
-        );
-    });
-}
-
-export function stopProject(name: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-        setTimeout(
-            () => {
-                resolve();
-            },
-            200
-        );
+        resolve(apiUrl + '/preview?' + Math.random());
     });
 }

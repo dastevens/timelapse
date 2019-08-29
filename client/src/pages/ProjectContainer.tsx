@@ -14,7 +14,7 @@ import { copyProject } from '../redux/CopyProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
     project: state.project.project,
-    privewUrl: state.project.previewUrl,
+    priviewUrl: state.project.previewUrl,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
@@ -28,9 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Events => {
         onNameChange: name => dispatch(editProject.setName(name)),
         onPreview: name => dispatch(controlProject.preview(name)),
         onSave: project => dispatch(saveProject(project)),
-        onStart: projectName => dispatch(controlProject.start(projectName)),
         onStartChange: start => dispatch(editProject.setStart(start)),
-        onStop: projectName => dispatch(controlProject.stop(projectName)),
     };
 };
 

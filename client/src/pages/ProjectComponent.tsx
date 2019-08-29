@@ -19,8 +19,6 @@ import {
     getTotalInterval,
     canEdit,
     canPreview,
-    canStart,
-    canStop,
     canDelete,
     canCopy
 } from '../model/Project';
@@ -53,7 +51,7 @@ export function getStatusValue(status: ProjectStatus, setting: Setting): string 
 
 export interface Fields {
     project?: Project;
-    privewUrl?: string;
+    priviewUrl?: string;
 }
 
 export interface Events {
@@ -66,8 +64,6 @@ export interface Events {
     onNameChange: (name: string) => void;
     onPreview: (name: string) => void;
     onSave: (project: Project) => void;
-    onStart: (name: string) => void;
-    onStop: (name: string) => void;
     onStartChange: (start: Date) => void;
 }
 
@@ -218,20 +214,6 @@ export const ProjectComponent = (props: Fields & Events) => {
                             visible={canPreview(project)}
                         />
                         <ButtonControl
-                            glyph="play"
-                            label="Start"
-                            onClick={() => props.onStart(project.name)}
-                            style="danger"
-                            visible={canStart(project)}
-                        />
-                        <ButtonControl
-                            glyph="stop"
-                            label="Stop"
-                            onClick={() => props.onStop(project.name)}
-                            style="danger"
-                            visible={canStop(project)}
-                        />
-                        <ButtonControl
                             glyph="copy"
                             label="Copy"
                             onClick={() => props.onCopy(project)}
@@ -249,12 +231,12 @@ export const ProjectComponent = (props: Fields & Events) => {
                     </ButtonGroup>
                 </form>
                 {
-                    props.privewUrl === undefined ? null :
+                    props.priviewUrl === undefined ? null :
                     <Modal.Dialog>
                         <Modal.Header>
                             <Modal.Title>Preview</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body><Image src={props.privewUrl}/></Modal.Body>
+                        <Modal.Body><Image width={"100%"} src={props.priviewUrl}/></Modal.Body>
                 
                         <Modal.Footer>
                         <Button onClick={() => props.onDismissPreview()}>Close</Button>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace engine
 {
     class PiCamera : ICamera
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly System.IO.Abstractions.IFileSystem fileSystem;
 
         public PiCamera(System.IO.Abstractions.IFileSystem fileSystem)
@@ -17,16 +19,19 @@ namespace engine
 
         public async Task Capture(string saveJpegFileAs)
         {
-            var pictureBytes = await Pi.Camera.CaptureImageJpegAsync(640, 480);
-            await Task.Run(() =>
+            if (!Pi.Camera.IsBusy)
             {
-                if (fileSystem.File.Exists(saveJpegFileAs))
-                {
-                    fileSystem.File.Delete(saveJpegFileAs);
-                }
+                var pictureBytes = await Pi.Camera.CaptureImageJpegAsync(640, 480);
+                await fileSystem.File.WriteAllBytesAsync(saveJpegFileAs, pictureBytes);
+            }
+            else
+            {
+                Logger.Warn($"Camera busy for {saveJpegFileAs}");
+            }
+        }
 
-                fileSystem.File.WriteAllBytes(saveJpegFileAs, pictureBytes);
-            });
+        public void Dispose()
+        {
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace engine
 {
-    public interface ICamera
+    public interface ICamera : IDisposable
     {
         Task Capture(string saveJpegFileAs);
     }

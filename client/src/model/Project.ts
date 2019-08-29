@@ -20,14 +20,6 @@ export function canEdit(project: Project) {
     return project.status === ProjectStatus.Setup;
 }
 
-export function canStart(project: Project) {
-    return project.status === ProjectStatus.Setup;
-}
-
-export function canStop(project: Project) {
-    return project.status === ProjectStatus.Capturing;
-}
-
 export function canPreview(project: Project) {
     return project.status === ProjectStatus.Setup;
 }
