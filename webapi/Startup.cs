@@ -57,10 +57,10 @@ namespace webapi
             else
             {
                 app.UseHsts();
-                app.UseDefaultFiles();
-                app.UseStaticFiles();
             }
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

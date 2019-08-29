@@ -3,7 +3,7 @@ import {
     ProjectStatus
 } from '../model/Project';
 
-const apiUrl: string = 'https://localhost:44340/api';
+const apiUrl: string = '/api';
 
 interface IApiProject {
     projectId: {
