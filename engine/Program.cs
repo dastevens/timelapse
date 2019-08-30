@@ -47,27 +47,11 @@ namespace engine
             var queueFolder = fileSystem.Path.GetFullPath("queue");
             fileSystem.Directory.CreateDirectory(queueFolder);
             var queue = new Queue(fileSystem, queueFolder);
+            await queue.PushAsync(new Project(new ProjectId("Test"), "Test", DateTime.Now.AddSeconds(5), 10, TimeSpan.FromSeconds(1)));
             var jobFolder = fileSystem.Path.GetFullPath("projects");
-            using (var camera = CreateCamera(fileSystem))
-            {
-                var scheduler = new Scheduler(fileSystem, jobFolder, queue, camera);
-                Logger.Info("Starting scheduler");
-                await scheduler.StartAsync(cancellationToken);
-            }
-        }
-
-        public static ICamera CreateCamera(IFileSystem fileSystem)
-        {
-            Logger.Info($"Platform {Environment.OSVersion.Platform}");
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Win32NT:
-                    return new WebCam();
-                case PlatformID.Unix:
-                    return new PiCamera(fileSystem);
-                default:
-                    throw new NotSupportedException($"Unsupported Platform {Environment.OSVersion.Platform}");
-            }
+            var scheduler = new Scheduler(fileSystem, jobFolder, queue, new CameraProvider(fileSystem));
+            Logger.Info("Starting scheduler");
+            await scheduler.StartAsync(cancellationToken);
         }
     }
 }

@@ -14,14 +14,14 @@ namespace engine
         private readonly IFileSystem fileSystem;
         private readonly string jobFolder;
         private readonly Queue queue;
-        private readonly ICamera camera;
+        private readonly CameraProvider cameraProvider;
 
-        public Scheduler(IFileSystem fileSystem, string jobFolder, Queue queue, ICamera camera)
+        public Scheduler(IFileSystem fileSystem, string jobFolder, Queue queue, CameraProvider cameraProvider)
         {
             this.fileSystem = fileSystem;
             this.jobFolder = jobFolder;
             this.queue = queue;
-            this.camera = camera;
+            this.cameraProvider = cameraProvider;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -39,8 +39,11 @@ namespace engine
             var projectFolder = fileSystem.Path.Combine(jobFolder, project.ProjectId.Name);
             var job = new Job(fileSystem, projectFolder, project);
             Logger.Info($"Starting job {project.ProjectId.Name}");
-            await job.StartAsync(camera, cancellationToken);
-            Logger.Info($"Completed job {project.ProjectId.Name}");
+            using (var camera = cameraProvider.Create())
+            {
+                await job.StartAsync(camera, cancellationToken);
+                Logger.Info($"Completed job {project.ProjectId.Name}");
+            }
         }
     }
 }

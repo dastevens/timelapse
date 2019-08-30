@@ -5,7 +5,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace webapi
+namespace engine
 {
     public class CameraProvider
     {
@@ -18,7 +18,15 @@ namespace webapi
 
         public ICamera Create()
         {
-            return engine.Program.CreateCamera(fileSystem);
+            switch (Environment.OSVersion.Platform)
+            {
+                case PlatformID.Win32NT:
+                    return new WebCam();
+                case PlatformID.Unix:
+                    return new PiCamera(fileSystem);
+                default:
+                    throw new NotSupportedException($"Unsupported Platform {Environment.OSVersion.Platform}");
+            }
         }
     }
 }
