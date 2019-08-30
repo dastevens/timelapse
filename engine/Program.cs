@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using core;
+using NLog;
 using System;
 using System.IO.Abstractions;
 using System.Threading;
@@ -12,10 +13,11 @@ namespace engine
 
         static void Main(string[] args)
         {
-            MainAsync().Wait();
+            var cameraFactoryAssemblyFileName = args[0];
+            MainAsync(cameraFactoryAssemblyFileName).Wait();
         }
 
-        static async Task MainAsync()
+        static async Task MainAsync(string cameraFactoryAssemblyFileName)
         {
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
@@ -29,7 +31,7 @@ namespace engine
 
                 try
                 {
-                    await RunEngineAsync(cancellationTokenSource.Token);
+                    await RunEngineAsync(cameraFactoryAssemblyFileName, cancellationTokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {
@@ -40,17 +42,13 @@ namespace engine
             }
         }
 
-        static async Task RunEngineAsync(CancellationToken cancellationToken)
+        static async Task RunEngineAsync(string cameraFactoryAssemblyFileName, CancellationToken cancellationToken)
         {
-            Logger.Info("Creating queue");
             var fileSystem = new System.IO.Abstractions.FileSystem();
-            var queueFolder = fileSystem.Path.GetFullPath("queue");
-            fileSystem.Directory.CreateDirectory(queueFolder);
-            var queue = new Queue(fileSystem, queueFolder);
-            var jobFolder = fileSystem.Path.GetFullPath("projects");
-            var scheduler = new Scheduler(fileSystem, jobFolder, queue, new CameraProvider(fileSystem));
-            Logger.Info("Starting scheduler");
-            await scheduler.StartAsync(cancellationToken);
+            var cameraFactory = new CameraFactory(cameraFactoryAssemblyFileName);
+            var engine = new Engine(cameraFactory, fileSystem);
+            Logger.Info("Starting engine");
+            await engine.RunAsync(cancellationToken);
         }
     }
 }

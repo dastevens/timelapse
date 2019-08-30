@@ -5,7 +5,7 @@ using System.IO.Abstractions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace engine
+namespace core
 {
     public struct ProjectId
     {

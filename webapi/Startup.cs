@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
-using engine;
+using core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,7 +39,7 @@ namespace webapi
             var fileSystem = new FileSystem();
             services.AddSingleton<IFileSystem>(fileSystem);
             services.AddSingleton<Queue>(new Queue(fileSystem, GetAppSetting("queue")));
-            services.AddSingleton<CameraProvider>(new CameraProvider(fileSystem));
+            services.AddSingleton<ICameraFactory>(new CameraFactory(GetAppSetting("cameraFactoryAssemblyFileName")));
         }
 
         private string GetAppSetting(string key)

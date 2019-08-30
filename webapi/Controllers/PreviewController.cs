@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
-using engine;
+using core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
@@ -15,19 +15,19 @@ namespace webapi.Controllers
     public class PreviewController : ControllerBase
     {
         private readonly IFileSystem fileSystem;
-        private readonly CameraProvider cameraProvider;
+        private readonly ICameraFactory cameraFactory;
 
-        public PreviewController(IFileSystem fileSystem, CameraProvider cameraProvider)
+        public PreviewController(IFileSystem fileSystem, ICameraFactory cameraFactory)
         {
             this.fileSystem = fileSystem;
-            this.cameraProvider = cameraProvider;
+            this.cameraFactory = cameraFactory;
         }
 
         [HttpGet]
         public async Task<IActionResult> Capture()
         {
             var fileName = fileSystem.Path.Combine(fileSystem.Path.GetTempPath(), "preview.jpg");
-            using (var camera = cameraProvider.Create())
+            using (var camera = cameraFactory.Create())
             {
                 await camera.Capture(fileName);
             }

@@ -1,18 +1,19 @@
-﻿using NLog;
+﻿using core;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Unosquare.RaspberryIO;
 
-namespace engine
+namespace core.raspberrypi
 {
-    class PiCamera : ICamera
+    class Camera : ICamera
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly System.IO.Abstractions.IFileSystem fileSystem;
 
-        public PiCamera(System.IO.Abstractions.IFileSystem fileSystem)
+        public Camera(System.IO.Abstractions.IFileSystem fileSystem)
         {
             this.fileSystem = fileSystem;
         }

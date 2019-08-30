@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace engine
+namespace core
 {
     public class Scheduler
     {
@@ -14,14 +14,14 @@ namespace engine
         private readonly IFileSystem fileSystem;
         private readonly string jobFolder;
         private readonly Queue queue;
-        private readonly CameraProvider cameraProvider;
+        private readonly ICameraFactory cameraFactory;
 
-        public Scheduler(IFileSystem fileSystem, string jobFolder, Queue queue, CameraProvider cameraProvider)
+        public Scheduler(IFileSystem fileSystem, string jobFolder, Queue queue, ICameraFactory cameraFactory)
         {
             this.fileSystem = fileSystem;
             this.jobFolder = jobFolder;
             this.queue = queue;
-            this.cameraProvider = cameraProvider;
+            this.cameraFactory = cameraFactory;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ namespace engine
             var projectFolder = fileSystem.Path.Combine(jobFolder, project.ProjectId.Name);
             var job = new Job(fileSystem, projectFolder, project);
             Logger.Info($"Starting job {project.ProjectId.Name}");
-            using (var camera = cameraProvider.Create())
+            using (var camera = cameraFactory.Create())
             {
                 await job.StartAsync(camera, cancellationToken);
                 Logger.Info($"Completed job {project.ProjectId.Name}");

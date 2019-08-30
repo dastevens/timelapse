@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace engine
+namespace core
 {
     public interface ICamera : IDisposable
     {

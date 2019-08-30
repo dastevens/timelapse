@@ -1,12 +1,12 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using OpenCvSharp;
 
-namespace engine
+namespace core.windows
 {
-    class WebCam : ICamera
+    class Camera : ICamera
     {
         VideoCapture capture = OpenCvSharp.VideoCapture.FromCamera(0);
 
