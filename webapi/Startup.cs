@@ -39,7 +39,6 @@ namespace webapi
             var fileSystem = new FileSystem();
             services.AddSingleton<IFileSystem>(fileSystem);
             services.AddSingleton<Queue>(new Queue(fileSystem, GetAppSetting("queue")));
-            services.AddSingleton<ICameraFactory>(new CameraFactory(GetAppSetting("cameraFactoryAssemblyFileName")));
         }
 
         private string GetAppSetting(string key)

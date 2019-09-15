@@ -5,7 +5,7 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace core.raspberrypi
+namespace engine.raspberrypi
 {
     public class CameraFactory : ICameraFactory
     {

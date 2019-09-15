@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using core;
 using OpenCvSharp;
 
-namespace core.windows
+namespace engine.windows
 {
     public class CameraFactory : ICameraFactory
     {

@@ -1,10 +1,11 @@
-﻿using OpenCvSharp;
+﻿using core;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace core.windows
+namespace engine.windows
 {
     class Camera : ICamera
     {

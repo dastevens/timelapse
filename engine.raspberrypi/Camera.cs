@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Unosquare.RaspberryIO;
 
-namespace core.raspberrypi
+namespace engine.raspberrypi
 {
     class Camera : ICamera
     {
