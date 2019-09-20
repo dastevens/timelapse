@@ -29,7 +29,7 @@ namespace core
         {
             var projectFile = ProjectFile(project.ProjectId);
             Logger.Info($"Adding project file {projectFile}");
-            await Project.SaveAs(fileSystem, project, projectFile);
+            await JsonHelper.SaveAs(fileSystem, project, projectFile);
         }
 
         private string ProjectFile(ProjectId projectId)
@@ -44,7 +44,7 @@ namespace core
             var projects = new List<Project>();
             foreach (var projectFile in projectFiles)
             {
-                projects.Add(await Project.ReadFrom(fileSystem, projectFile.FullName));
+                projects.Add(await JsonHelper.ReadFrom<Project>(fileSystem, projectFile.FullName));
             }
             return projects;
         }

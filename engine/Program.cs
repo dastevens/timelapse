@@ -11,7 +11,7 @@ namespace engine
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static async Task MainAsync(ICameraFactory cameraFactory)
+        public static async Task MainAsync(Config config, ICameraFactory cameraFactory)
         {
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
@@ -25,7 +25,7 @@ namespace engine
 
                 try
                 {
-                    await RunEngineAsync(cameraFactory, cancellationTokenSource.Token);
+                    await RunEngineAsync(config, cameraFactory, cancellationTokenSource.Token);
                 }
                 catch (TaskCanceledException)
                 {
@@ -36,12 +36,12 @@ namespace engine
             }
         }
 
-        static async Task RunEngineAsync(ICameraFactory cameraFactory, CancellationToken cancellationToken)
+        static async Task RunEngineAsync(Config config, ICameraFactory cameraFactory, CancellationToken cancellationToken)
         {
             try
             {
                 var fileSystem = new FileSystem();
-                var engine = new Engine(cameraFactory, fileSystem);
+                var engine = new Engine(config, cameraFactory, fileSystem);
                 Logger.Info("Starting engine");
                 await engine.RunAsync(cancellationToken);
             }

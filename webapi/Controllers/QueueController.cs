@@ -10,11 +10,11 @@ namespace webapi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class QueueController : ControllerBase
     {
         private readonly Queue queue;
 
-        public ProjectsController(Queue queue)
+        public QueueController(Queue queue)
         {
             this.queue = queue;
         }

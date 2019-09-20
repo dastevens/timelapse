@@ -1,4 +1,5 @@
-﻿using System;
+﻿using core;
+using System;
 
 namespace engine.windows
 {
@@ -6,8 +7,9 @@ namespace engine.windows
     {
         static void Main(string[] args)
         {
+            var config = new Config();
             var cameraFactory = new CameraFactory();
-            engine.Program.MainAsync(cameraFactory).Wait();
+            engine.Program.MainAsync(config, cameraFactory).Wait();
         }
     }
 }

@@ -36,14 +36,19 @@ namespace webapi
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            var config = new Config();
+            config.JobFolder = GetAppSetting("job", config.JobFolder);
+            config.ProjectsFolder = GetAppSetting("project", config.ProjectsFolder);
+            config.QueueFolder = GetAppSetting("queue", config.QueueFolder);
             var fileSystem = new FileSystem();
             services.AddSingleton<IFileSystem>(fileSystem);
-            services.AddSingleton<Queue>(new Queue(fileSystem, GetAppSetting("queue")));
+            services.AddSingleton<Queue>(new Queue(fileSystem, config.QueueFolder));
+            services.AddSingleton<Config>(config);
         }
 
-        private string GetAppSetting(string key)
+        private string GetAppSetting(string key, string defaultValue)
         {
-            return Configuration.GetValue<string>($"AppSettings:{key}");
+            return Configuration.GetValue<string>($"AppSettings:{key}") ?? defaultValue;
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
