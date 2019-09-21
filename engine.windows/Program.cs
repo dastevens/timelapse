@@ -1,5 +1,6 @@
 ﻿using core;
 using System;
+using System.IO.Abstractions;
 
 namespace engine.windows
 {
@@ -7,9 +8,8 @@ namespace engine.windows
     {
         static void Main(string[] args)
         {
-            var config = new Config();
             var cameraFactory = new CameraFactory();
-            engine.Program.MainAsync(config, cameraFactory).Wait();
+            engine.Program.MainAsync("engine.json", cameraFactory).Wait();
         }
     }
 }

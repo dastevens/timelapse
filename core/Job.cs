@@ -14,12 +14,14 @@ namespace core
         private readonly IFileSystem fileSystem;
         private readonly string jobFolder;
         private readonly Project project;
+        private readonly Signal abortSignal;
 
         public Job(IFileSystem fileSystem, string jobFolder, Project project)
         {
             this.fileSystem = fileSystem;
             this.jobFolder = jobFolder;
             this.project = project;
+            this.abortSignal = new Signal(fileSystem, fileSystem.Path.Combine(jobFolder, "abort.command"));
         }
 
         public Task StartAsync(ICamera camera, CancellationToken cancellationToken)
@@ -31,7 +33,7 @@ namespace core
                     RunJobAsync(camera, cancellationToken).Wait();
                     jobCompletion.Cancel();
                 }),
-                ListenAbortSignalAsync(jobCompletion.Token));
+                abortSignal.WaitSignalAsync(jobCompletion.Token));
         }
 
         public async Task RunJobAsync(ICamera camera, CancellationToken cancellationToken)
@@ -74,26 +76,9 @@ namespace core
             return fileSystem.Path.Combine(jobFolder, "status.info");
         }
 
-        private static string SignalAbortFileName(IFileSystem fileSystem, string jobFolder)
+        public static async Task SendAbortSignalAsync(IFileSystem fileSystem, string jobFolder)
         {
-            return fileSystem.Path.Combine(jobFolder, "abort.command");
-        }
-
-        private async Task ListenAbortSignalAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-                if (fileSystem.File.Exists(SignalAbortFileName(fileSystem, jobFolder)))
-                {
-                    return;
-                }
-            }
-        }
-
-        public static Task SendAbortSignalAsync(IFileSystem fileSystem, string jobFolder)
-        {
-            return Task.Run(() => fileSystem.File.Create(SignalAbortFileName(fileSystem, jobFolder)));
+            await new Signal(fileSystem, fileSystem.Path.Combine(jobFolder, "abort.command")).RaiseAsync();
         }
     }
 }

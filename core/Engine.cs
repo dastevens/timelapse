@@ -28,11 +28,20 @@ namespace core
             var queueFolder = fileSystem.Path.GetFullPath(config.QueueFolder);
             fileSystem.Directory.CreateDirectory(queueFolder);
             var queue = new Queue(fileSystem, queueFolder);
+            var engineFolder = fileSystem.Path.GetFullPath(config.EngineFolder);
+            fileSystem.Directory.CreateDirectory(engineFolder);
             var jobFolder = fileSystem.Path.GetFullPath(config.JobFolder);
+            fileSystem.Directory.CreateDirectory(jobFolder);
             var projectsFolder = fileSystem.Path.GetFullPath(config.ProjectsFolder);
-            var scheduler = new Scheduler(fileSystem, jobFolder, projectsFolder, queue, cameraFactory);
+            fileSystem.Directory.CreateDirectory(projectsFolder);
+            var scheduler = new Scheduler(fileSystem, engineFolder, jobFolder, projectsFolder, queue, cameraFactory);
             Logger.Info("Starting scheduler");
             await scheduler.StartAsync(cancellationToken);
+        }
+
+        public static async Task SendPreviewSignalAsync(IFileSystem fileSystem, string engineFolder)
+        {
+            await new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "preview")).RaiseAsync();
         }
     }
 }

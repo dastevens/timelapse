@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace webapi
 {
@@ -44,6 +45,11 @@ namespace webapi
             services.AddSingleton<IFileSystem>(fileSystem);
             services.AddSingleton<Queue>(new Queue(fileSystem, config.QueueFolder));
             services.AddSingleton<Config>(config);
+            //services.AddSingleton<ICameraFactory>(new engine.windows.CameraFactory());
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
         }
 
         private string GetAppSetting(string key, string defaultValue)
@@ -62,6 +68,15 @@ namespace webapi
             {
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "TimeLapse API V1");
+            });
 
             app.UseDefaultFiles();
             app.UseStaticFiles();

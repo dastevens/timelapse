@@ -11,8 +11,10 @@ namespace engine
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public static async Task MainAsync(Config config, ICameraFactory cameraFactory)
+        public static async Task MainAsync(string engineJson, ICameraFactory cameraFactory)
         {
+            var config = await JsonHelper.ReadFrom<Config>(new FileSystem(), engineJson);
+
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
                 var keyBoardTask = Task.Run(() =>

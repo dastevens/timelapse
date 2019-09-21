@@ -12,31 +12,71 @@ namespace core
     {
         private Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IFileSystem fileSystem;
+        private readonly string engineFolder;
         private readonly string jobFolder;
         private readonly string projectsFolder;
         private readonly Queue queue;
         private readonly ICameraFactory cameraFactory;
+        private readonly Signal heartbeatSignal;
+        private readonly Signal previewSignal;
+        private bool acquisition = false;
 
-        public Scheduler(IFileSystem fileSystem, string jobFolder, string projectsFolder, Queue queue, ICameraFactory cameraFactory)
+        public Scheduler(IFileSystem fileSystem, string engineFolder, string jobFolder, string projectsFolder, Queue queue, ICameraFactory cameraFactory)
         {
             this.fileSystem = fileSystem;
+            this.engineFolder = engineFolder;
             this.jobFolder = jobFolder;
             this.projectsFolder = projectsFolder;
             this.queue = queue;
             this.cameraFactory = cameraFactory;
+            this.heartbeatSignal = new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "heartbeat"));
+            this.previewSignal = new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "preview"));
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            var schedulerCompletion = new CancellationTokenSource();
+            _ = HeartbeatAsync(schedulerCompletion.Token);
+            _ = PreviewAsync(schedulerCompletion.Token);
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Sweep(cancellationToken);
+            }
+            schedulerCompletion.Cancel();
+        }
+        private async Task HeartbeatAsync(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await heartbeatSignal.RaiseAsync();
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            }
+        }
+
+        private async Task PreviewAsync(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await previewSignal.WaitSignalAsync(cancellationToken);
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    if (!acquisition)
+                    {
+                        Logger.Info($"Starting preview");
+                        using (var camera = cameraFactory.Create())
+                        {
+                            await camera.Capture(fileSystem.Path.Combine(engineFolder, "preview.jpg"));
+                            Logger.Info($"Preview complete");
+                        }
+                    }
+                }
             }
         }
 
         private async Task Sweep(CancellationToken cancellationToken)
         {
             var project = await queue.PopAsync(cancellationToken);
+            acquisition = true;
             var job = new Job(fileSystem, jobFolder, project);
             Logger.Info($"Starting job {project.ProjectId.Name}");
             using (var camera = cameraFactory.Create())
@@ -46,6 +86,7 @@ namespace core
                 await Task.Run(() => fileSystem.Directory.Move(jobFolder, projectFolder));
                 Logger.Info($"Completed job {project.ProjectId.Name}");
             }
+            acquisition = false;
         }
     }
 }

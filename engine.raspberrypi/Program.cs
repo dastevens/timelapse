@@ -10,9 +10,8 @@ namespace engine.raspberrypi
     {
         static void Main(string[] args)
         {
-            var config = new Config();
             var cameraFactory = new CameraFactory(new FileSystem());
-            engine.Program.MainAsync(config, cameraFactory).Wait();
+            engine.Program.MainAsync("engine.json", cameraFactory).Wait();
         }
     }
 }

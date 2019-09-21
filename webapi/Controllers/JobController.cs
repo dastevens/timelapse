@@ -31,7 +31,14 @@ namespace webapi.Controllers
         [HttpGet("images")]
         public Task<IEnumerable<string>> Images()
         {
-            return Task.Run(() => fileSystem.Directory.EnumerateFiles(jobFolder, "*.jpg"));
+            return Task.Run(() =>
+            {
+                if (fileSystem.Directory.Exists(jobFolder))
+                {
+                    return fileSystem.Directory.EnumerateFiles(jobFolder, "*.jpg");
+                }
+                return new string[0];
+            });
         }
 
         [HttpGet("image/{imageJpg}")]
