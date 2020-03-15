@@ -1,1 +1,3 @@
-dotnet run -p engine\engine.csproj -c Release
+pushd engine.windows
+dotnet run -c Release
+popd
