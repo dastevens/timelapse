@@ -42,7 +42,7 @@ namespace webapi.Controllers
         }
 
         [HttpGet("image/{imageJpg}")]
-        public async Task<IActionResult> Image(string imageJpg)
+        public IActionResult Image(string imageJpg)
         {
             var fileName = fileSystem.Path.Combine(jobFolder, imageJpg);
             var fileInfo = fileSystem.FileInfo.FromFileName(fileName);
