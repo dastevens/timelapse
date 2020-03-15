@@ -45,7 +45,7 @@ namespace webapi
             services.AddSingleton<IFileSystem>(fileSystem);
             services.AddSingleton<Queue>(new Queue(fileSystem, config.QueueFolder));
             services.AddSingleton<Config>(config);
-            //services.AddSingleton<ICameraFactory>(new engine.windows.CameraFactory());
+            services.AddSingleton<ICameraFactory>(new engine.windows.CameraFactory());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
