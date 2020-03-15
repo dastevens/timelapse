@@ -82,7 +82,7 @@ function zeroPad(val: number): string {
 
 export function getProjectList(): Promise<Project[]> {
 
-    return fetch(apiUrl + '/projects')
+    return fetch(apiUrl + '/queue')
         .then(response => {
             if (response.status !== 200) {
                 throw response.statusText;
@@ -98,7 +98,7 @@ export function createProject(name: string): Promise<Project> {
 
     var project = ToApi(new ApiProject(name));
 
-    return fetch(apiUrl + '/projects', {
+    return fetch(apiUrl + '/queue', {
         method: 'POST',
         body: JSON.stringify(project),
         headers: {
@@ -115,7 +115,7 @@ export function createProject(name: string): Promise<Project> {
 }
 
 export function updateProject(project: Project): Promise<Project> {
-    return fetch(apiUrl + '/projects/' + project.name, {
+    return fetch(apiUrl + '/queue/' + project.name, {
         method: 'PUT',
         body: JSON.stringify(ToApi(project)),
         headers: {
@@ -137,7 +137,7 @@ export function copyProject(project: Project): Promise<Project> {
 
 export function deleteProject(name: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        return fetch(apiUrl + '/projects/' + name, {
+        return fetch(apiUrl + '/queue/' + name, {
             method: 'DELETE'
         })
         .then(response => {

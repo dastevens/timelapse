@@ -46,6 +46,16 @@ export const ProjectListComponent = (props: Fields & Events) => (
             : null
         }
         {
+            props.loading === false && props.projects.length === 0
+            ? <ListGroupItem
+                bsStyle='info'>
+                <Glyphicon glyph='info-sign'
+                />&nbsp;
+                No projects
+            </ListGroupItem>
+            : null
+        }
+        {
             props.projects.map(project =>
                 <ListGroupItem
                     bsStyle={getStatusValue(project.status, Setting.bsStyle)}

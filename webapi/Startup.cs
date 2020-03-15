@@ -39,7 +39,7 @@ namespace webapi
 
             var config = new Config();
             config.JobFolder = GetAppSetting("job", config.JobFolder);
-            config.ProjectsFolder = GetAppSetting("project", config.ProjectsFolder);
+            config.ProjectsFolder = GetAppSetting("projects", config.ProjectsFolder);
             config.QueueFolder = GetAppSetting("queue", config.QueueFolder);
             var fileSystem = new FileSystem();
             services.AddSingleton<IFileSystem>(fileSystem);

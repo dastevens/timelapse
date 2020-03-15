@@ -19,21 +19,21 @@ namespace webapi.Controllers
             this.queue = queue;
         }
 
-        // GET: api/Project
+        // GET: api/queue
         [HttpGet]
         public async Task<IEnumerable<Project>> Get()
         {
             return await queue.ReadQueueAsync();
         }
 
-        // POST: api/Project
+        // POST: api/queue
         [HttpPost]
         public async Task Post([FromBody] Project value)
         {
             await queue.PushAsync(value);
         }
 
-        // PUT: api/Project/5
+        // PUT: api/queue/5
         [HttpPut("{id}")]
         public async Task Put(string id, [FromBody] Project value)
         {
@@ -41,7 +41,7 @@ namespace webapi.Controllers
             await queue.PushAsync(value);
         }
 
-        // DELETE: api/Project/5
+        // DELETE: api/queue/5
         [HttpDelete("{id}")]
         public async Task Delete(string id)
         {
