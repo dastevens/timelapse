@@ -10,6 +10,8 @@ import { Project } from '../model/Project';
 import { selectProject } from '../redux/SelectProjectAction';
 
 const mapStateToProps = (state: StoreState): Fields => ({
+    errorMessage: state.projectList.errorMessage,
+    loading: state.projectList.loading,
     projects: state.projectList.projects,
 });
 

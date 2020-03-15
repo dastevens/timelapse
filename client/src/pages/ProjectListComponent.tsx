@@ -13,6 +13,8 @@ import {
 } from './ProjectComponent';
 
 export interface Fields {
+    errorMessage: string,
+    loading: boolean,
     projects: Project[];
 }
 
@@ -23,6 +25,26 @@ export interface Events {
 
 export const ProjectListComponent = (props: Fields & Events) => (
     <ListGroup>
+        {
+            props.loading
+            ? <ListGroupItem
+                bsStyle='warning'>
+                    <Glyphicon glyph='flash'
+                    />&nbsp;
+                    Loading projects...
+                </ListGroupItem>
+            : null
+        }
+        {
+            props.errorMessage
+            ? <ListGroupItem
+                bsStyle='danger'>
+                    <Glyphicon glyph='flash'
+                    />&nbsp;
+                    {props.errorMessage} 
+                </ListGroupItem>
+            : null
+        }
         {
             props.projects.map(project =>
                 <ListGroupItem
