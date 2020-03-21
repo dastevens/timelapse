@@ -28,7 +28,9 @@ export const NavigationComponent = (props: Fields & Events) => (
         </Navbar.Header>
         <Navbar.Collapse>
             <Nav>
-                <NavItem onClick={() => props.selectProject(undefined)}>Projects</NavItem>
+                <NavItem onClick={() => props.selectProject(undefined)}>
+                    Projects
+                </NavItem>
                 <NavDropdown title="Select a project" id="nav-dropdown-projects">
                     {
                         props.projects.map(project =>
@@ -39,13 +41,14 @@ export const NavigationComponent = (props: Fields & Events) => (
                     }
                 </NavDropdown>
                 <NavItem>
-                    <FormControl type="text"
+                    <FormControl
+                        type="text"
                         value={props.createProjectName}
                         onChange={(event) => props.setCreateProjectName((event.target as any).value as string)}
-                        />
+                    />
                 </NavItem>
                 <NavItem onClick={() => props.createProject(props.createProjectName)}>
-                New
+                    New
                 </NavItem>
             </Nav>
         </Navbar.Collapse>

@@ -93,23 +93,28 @@ const ButtonControl = (props: {
     onClick: () => void,
     style: string,
     visible: boolean,
-}) => (<span>{
-    props.visible
-    ?
-        <Button
-            bsStyle={props.style}
-            onClick={() => {
-                if (props.confirm === undefined) {
-                    props.onClick();
-                } else if (confirm(props.confirm)) {
-                    props.onClick();
-                }
-            }}
-        >
-        <Glyphicon glyph={props.glyph}/> {props.label}
-    </Button>
+}) =>
+(
+    <span>
+        {
+            props.visible
+            ?
+                <Button
+                    bsStyle={props.style}
+                    onClick={() => {
+                        if (props.confirm === undefined) {
+                            props.onClick();
+                        } else if (confirm(props.confirm)) {
+                            props.onClick();
+                        }
+                    }}
+                >
+                    <Glyphicon glyph={props.glyph}/>
+                    &nbsp;{props.label}
+                </Button>
             : null
-    }</span>
+        }
+    </span>
 );
 
 const pad = (value: number): string => (value < 10 ? '0' : '') + value;
@@ -175,8 +180,8 @@ export const ProjectComponent = (props: Fields & Events) => {
                     <EditControl
                         name="Start time"
                         onChange={(timeString) => {
-                            console.log(timeString);
-                            props.onStartChange(valueToDate(dateToValue(project.start), timeString));}}
+                            props.onStartChange(valueToDate(dateToValue(project.start), timeString));
+                        }}
                         type="time"
                         value={timeToValue(project.start)}
                     />
@@ -238,7 +243,7 @@ export const ProjectComponent = (props: Fields & Events) => {
                         <Modal.Header>
                             <Modal.Title>Preview</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body><Image width={"100%"} src={props.priviewUrl}/></Modal.Body>
+                        <Modal.Body><Image width={'100%'} src={props.priviewUrl}/></Modal.Body>
                 
                         <Modal.Footer>
                         <Button onClick={() => props.onDismissPreview()}>Close</Button>

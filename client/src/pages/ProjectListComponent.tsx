@@ -13,8 +13,8 @@ import {
 } from './ProjectComponent';
 
 export interface Fields {
-    errorMessage: string,
-    loading: boolean,
+    errorMessage: string;
+    loading: boolean;
     projects: Project[];
 }
 
@@ -27,32 +27,26 @@ export const ProjectListComponent = (props: Fields & Events) => (
     <ListGroup>
         {
             props.loading
-            ? <ListGroupItem
-                bsStyle='warning'>
-                    <Glyphicon glyph='flash'
-                    />&nbsp;
-                    Loading projects...
+            ?   <ListGroupItem bsStyle="warning">
+                    <Glyphicon glyph="flash"/>
+                    &nbsp;Loading projects...
                 </ListGroupItem>
             : null
         }
         {
             props.errorMessage
-            ? <ListGroupItem
-                bsStyle='danger'>
-                    <Glyphicon glyph='flash'
-                    />&nbsp;
-                    {props.errorMessage} 
+            ?   <ListGroupItem bsStyle="danger">
+                    <Glyphicon glyph="flash"/>
+                    &nbsp;{props.errorMessage} 
                 </ListGroupItem>
             : null
         }
         {
             props.loading === false && props.projects.length === 0
-            ? <ListGroupItem
-                bsStyle='info'>
-                <Glyphicon glyph='info-sign'
-                />&nbsp;
-                No projects
-            </ListGroupItem>
+            ?   <ListGroupItem bsStyle="info">
+                    <Glyphicon glyph="info-sign"/>
+                    &nbsp;No projects
+                </ListGroupItem>
             : null
         }
         {
@@ -64,8 +58,8 @@ export const ProjectListComponent = (props: Fields & Events) => (
                 >
                     <Glyphicon
                         glyph={getStatusValue(project.status, Setting.glyph)}
-                    />&nbsp;
-                    {project.name}
+                    />
+                    &nbsp;{project.name}
                 </ListGroupItem>
             )
         }
