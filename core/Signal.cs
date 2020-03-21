@@ -35,7 +35,9 @@ namespace core
         {
             return Task.Run(() =>
             {
-                using (var stream = fileSystem.File.Create(signalFileName)) ;
+                using (var stream = fileSystem.File.Create(signalFileName))
+                {
+                }
             });
         }
     }

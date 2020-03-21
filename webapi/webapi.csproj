@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj" />
-    <ProjectReference Include="..\engine.windows\engine.windows.csproj" />
   </ItemGroup>
 
 </Project>

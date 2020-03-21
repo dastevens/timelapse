@@ -18,7 +18,8 @@ namespace core
         private readonly Queue queue;
         private readonly ICameraFactory cameraFactory;
         private readonly Signal heartbeatSignal;
-        private readonly Signal previewSignal;
+        private readonly Signal requestPreviewSignal;
+        private readonly Signal previewCompleteSignal;
         private bool acquisition = false;
 
         public Scheduler(IFileSystem fileSystem, string engineFolder, string jobFolder, string projectsFolder, Queue queue, ICameraFactory cameraFactory)
@@ -30,7 +31,8 @@ namespace core
             this.queue = queue;
             this.cameraFactory = cameraFactory;
             this.heartbeatSignal = new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "heartbeat"));
-            this.previewSignal = new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "preview"));
+            this.requestPreviewSignal = new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "request-preview"));
+            this.previewCompleteSignal = new Signal(fileSystem, fileSystem.Path.Combine(engineFolder, "preview-complete"));
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -57,7 +59,7 @@ namespace core
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await previewSignal.WaitSignalAsync(cancellationToken);
+                await requestPreviewSignal.WaitSignalAsync(cancellationToken);
                 if (!cancellationToken.IsCancellationRequested)
                 {
                     if (!acquisition)
@@ -67,6 +69,7 @@ namespace core
                         {
                             await camera.Capture(fileSystem.Path.Combine(engineFolder, "preview.jpg"));
                             Logger.Info($"Preview complete");
+                            await previewCompleteSignal.RaiseAsync();
                         }
                     }
                 }

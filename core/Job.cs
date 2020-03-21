@@ -52,6 +52,7 @@ namespace core
                     await Task.Delay(delay, cancellationToken);
                     Logger.Info(imageName);
                     await camera.Capture(imageName);
+                    await WriteJobStatusAsync(projectFile, nextCapture.Add(project.Interval), i);
                 }
                 else
                 {
@@ -68,7 +69,15 @@ namespace core
 
         public static async Task<JobStatus> ReadJobStatusAsync(IFileSystem fileSystem, string jobFolder)
         {
-            return await JsonHelper.ReadFrom<JobStatus>(fileSystem, JobStatusFileName(fileSystem, jobFolder));
+            var jobStatusFileName = JobStatusFileName(fileSystem, jobFolder);
+            if (fileSystem.File.Exists(jobStatusFileName))
+            {
+                return await JsonHelper.ReadFrom<JobStatus>(fileSystem, JobStatusFileName(fileSystem, jobFolder));
+            }
+            else
+            {
+                return new JobStatus(null, DateTime.MaxValue, 0);
+            }
         }
 
         private static string JobStatusFileName(IFileSystem fileSystem, string jobFolder)

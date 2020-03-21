@@ -38,14 +38,15 @@ namespace webapi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var config = new Config();
-            config.JobFolder = GetAppSetting("job", config.JobFolder);
-            config.ProjectsFolder = GetAppSetting("projects", config.ProjectsFolder);
-            config.QueueFolder = GetAppSetting("queue", config.QueueFolder);
+            System.IO.Directory.CreateDirectory(config.EngineFolder);
+            System.IO.Directory.CreateDirectory(config.JobFolder);
+            System.IO.Directory.CreateDirectory(config.ProjectsFolder);
+            System.IO.Directory.CreateDirectory(config.QueueFolder);
+
             var fileSystem = new FileSystem();
             services.AddSingleton<IFileSystem>(fileSystem);
             services.AddSingleton<Queue>(new Queue(fileSystem, config.QueueFolder));
             services.AddSingleton<Config>(config);
-            services.AddSingleton<ICameraFactory>(new engine.windows.CameraFactory());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
