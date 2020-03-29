@@ -45,7 +45,7 @@ namespace core
             var nextCapture = project.Start;
             for (var i = 0; (i < project.Images) && !cancellationToken.IsCancellationRequested; i++)
             {
-                var delay = nextCapture.Subtract(DateTime.Now);
+                var delay = nextCapture.Subtract(DateTime.UtcNow);
                 var imageName = fileSystem.Path.Combine(jobFolder, $"{i:D4}.jpg");
                 if (delay > TimeSpan.Zero)
                 {

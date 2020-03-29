@@ -73,7 +73,7 @@ namespace core
                 if (front.Any())
                 {
                     var next = front.First();
-                    if (next.Start < DateTime.Now.Add(checkPeriod).Add(checkPeriod))
+                    if (next.Start < DateTime.UtcNow.Add(checkPeriod).Add(checkPeriod))
                     {
                         Logger.Info($"Popping project {next.ProjectId.Name}");
                         await RemoveAsync(next.ProjectId);
@@ -81,7 +81,7 @@ namespace core
                     }
                     else
                     {
-                        Logger.Info($"Next project {next.ProjectId.Name} starts in {next.Start.Subtract(DateTime.Now)}");
+                        Logger.Info($"Next project {next.ProjectId.Name} starts in {next.Start.Subtract(DateTime.UtcNow)}");
                     }
                 }
                 else
