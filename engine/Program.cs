@@ -13,15 +13,20 @@ namespace engine
 
         public static async Task MainAsync(string engineJson, ICameraFactory cameraFactory)
         {
-            var config = await JsonHelper.ReadFrom<Config>(new FileSystem(), engineJson);
+            var fileSystem = new FileSystem();
+            var config = new Config();
+            if (fileSystem.File.Exists(engineJson))
+            {
+                config = await JsonHelper.ReadFrom<Config>(new FileSystem(), engineJson);
+            }
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
                 var keyBoardTask = Task.Run(() =>
                 {
                     Console.WriteLine("Press enter to cancel");
-                    Console.ReadKey();
-                    Console.WriteLine("Cancelled");
+                    Console.ReadLine();
+                    Console.WriteLine("Cancelled by user");
                     cancellationTokenSource.Cancel();
                 });
 
@@ -29,9 +34,9 @@ namespace engine
                 {
                     await RunEngineAsync(config, cameraFactory, cancellationTokenSource.Token);
                 }
-                catch (TaskCanceledException)
+                catch (TaskCanceledException e)
                 {
-                    Console.WriteLine("Task was cancelled");
+                    Logger.Error(e, "RunEngineAsync task was cancelled");
                 }
 
                 await keyBoardTask;
